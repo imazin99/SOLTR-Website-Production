@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOLTR — My Account</title>
+<meta name="description" content="SOLTR. Heavyweight cotton tees, boxy cut, zero filler.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=JetBrains+Mono:wght@400;500;600;700&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div class="topbar">🚚 Free Shipping All Over Egypt &nbsp;·&nbsp; SS'26 Summer Drop Live Now</div>
+
+<header id="siteHeader">
+  <a href="../index.html" class="logo-mark" aria-label="Soltr home">
+    <img src="../assests/images/product/logo.png" alt="Soltr">
+  </a>
+  <nav class="primary">
+    <ul>
+      <li><a href="../index.html#shop">Shop</a></li>
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#reviews">Reviews</a></li>
+      <li><a href="../index.html#connect">Contact</a></li>
+    </ul>
+  </nav>
+  <div class="header-actions">
+    <div class="header-auth" id="customerNav"></div>
+    <a href="../wishlist/wishlist.html" class="icon-btn" id="wishlistLink" aria-label="View wishlist">
+      ♡ <span class="cart-count" id="wishlistCount">0</span>
+    </a>
+    <button class="icon-btn" id="cartOpenBtn" aria-label="Open cart">
+      Cart <span class="cart-count" id="cartCount">0</span>
+    </button>
+    <button class="burger" id="burgerBtn" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="close-btn" id="mobileCloseBtn">CLOSE ✕</button>
+  <a href="../index.html#shop">Shop</a>
+  <a href="../index.html#about">About</a>
+  <a href="../index.html#reviews">Reviews</a>
+  <a href="../index.html#connect">Contact</a>
+</div>
+
+<main id="top">
+
+  <!-- ACCOUNT -->
+  <section class="account-page">
+    <div class="wrap">
+      <div class="pd-breadcrumb">
+        <a href="../index.html">Shop</a> <span>/</span> <span>My Account</span>
+      </div>
+
+      <div id="accountLoading" class="pd-loading">Loading your account…</div>
+
+      <div class="account-shell" id="accountShell" style="display:none;">
+
+        <button class="account-menu-toggle" id="accountMenuToggle">☰ Account Menu</button>
+
+        <aside class="account-sidebar" id="accountSidebar">
+          <div class="account-user">
+            <div class="account-avatar" id="accountAvatar">?</div>
+            <div class="account-user-name" id="accountUserName">—</div>
+            <div class="account-user-email" id="accountUserEmail">—</div>
+          </div>
+
+          <nav class="account-nav">
+            <button class="account-nav-item active" data-section="profile">
+              <span class="account-nav-icon">👤</span> My Profile
+            </button>
+            <button class="account-nav-item" data-section="orders">
+              <span class="account-nav-icon">📦</span> My Orders
+            </button>
+            <button class="account-nav-item" data-section="wishlist">
+              <span class="account-nav-icon">❤️</span> Wishlist
+            </button>
+            <button class="account-nav-item" data-section="addresses">
+              <span class="account-nav-icon">📍</span> Addresses
+            </button>
+            <button class="account-nav-item" data-section="settings">
+              <span class="account-nav-icon">⚙</span> Account Settings
+            </button>
+            <button class="account-nav-item account-nav-logout" id="accountLogoutBtn">
+              <span class="account-nav-icon">🚪</span> Logout
+            </button>
+          </nav>
+        </aside>
+
+        <div class="overlay" id="accountSidebarOverlay"></div>
+
+        <div class="account-content">
+
+          <section class="account-tab active" data-section="profile">
+            <h2>My Profile</h2>
+            <p>View and update your personal details.</p>
+
+            <div class="account-profile-view" id="profileView">
+              <div class="account-profile-row">
+                <span class="account-profile-label">Full Name</span>
+                <span class="account-profile-value" id="profileName">—</span>
+              </div>
+              <div class="account-profile-row">
+                <span class="account-profile-label">Email Address</span>
+                <span class="account-profile-value" id="profileEmail">—</span>
+              </div>
+              <div class="account-profile-row">
+                <span class="account-profile-label">Email Status</span>
+                <span class="account-profile-value" id="profileEmailStatus">—</span>
+              </div>
+              <div class="account-profile-row">
+                <span class="account-profile-label">Phone Number</span>
+                <span class="account-profile-value" id="profilePhone">—</span>
+              </div>
+              <div class="account-profile-row">
+                <span class="account-profile-label">Account Created</span>
+                <span class="account-profile-value" id="profileCreated">—</span>
+              </div>
+              <div class="account-profile-row">
+                <span class="account-profile-label">Last Login</span>
+                <span class="account-profile-value" id="profileLastLogin">—</span>
+              </div>
+              <button class="btn btn-solid" id="editProfileBtn" style="margin-top:10px;">Edit Profile</button>
+            </div>
+
+            <form class="account-profile-form" id="profileEditForm" style="display:none;" novalidate>
+              <div class="field-group">
+                <label class="field-label" for="editName">Full Name</label>
+                <input class="field-input" type="text" id="editName" required>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="editEmailDisabled">Email Address (cannot be changed)</label>
+                <input class="field-input" type="email" id="editEmailDisabled" disabled>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="editPhone">Phone Number</label>
+                <input class="field-input" type="tel" id="editPhone">
+              </div>
+              <div class="pd-review-form-msg" id="profileFormMsg"></div>
+              <div class="account-form-actions">
+                <button type="submit" class="btn btn-solid" id="saveProfileBtn">Save Changes</button>
+                <button type="button" class="btn" id="cancelProfileBtn">Cancel</button>
+              </div>
+            </form>
+
+            <div class="account-password-section">
+              <h3>Change Password</h3>
+              <form id="passwordForm" novalidate>
+                <div class="field-group">
+                  <label class="field-label" for="currentPassword">Current Password</label>
+                  <input class="field-input" type="password" id="currentPassword" autocomplete="current-password" required>
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="newPassword">New Password</label>
+                  <input class="field-input" type="password" id="newPassword" autocomplete="new-password" required>
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="confirmNewPassword">Confirm New Password</label>
+                  <input class="field-input" type="password" id="confirmNewPassword" autocomplete="new-password" required>
+                </div>
+                <div class="pd-review-form-msg" id="passwordFormMsg"></div>
+                <button type="submit" class="btn btn-solid" id="savePasswordBtn">Change Password</button>
+              </form>
+            </div>
+          </section>
+
+          <section class="account-tab" data-section="orders">
+            <h2>My Orders</h2>
+            <p>Track your past and current orders.</p>
+
+            <div id="ordersLoading" class="pd-loading" style="padding:60px 20px;">Loading your orders…</div>
+            <div id="ordersError" class="account-coming-soon" style="display:none; border-color:var(--burgundy-light); color:var(--burgundy-light);"></div>
+            <div id="ordersEmpty" class="wishlist-empty" style="display:none; padding:50px 20px;">
+              <p>You haven't placed any orders yet.</p>
+              <a href="../index.html#shop" class="btn btn-solid">Start Shopping →</a>
+            </div>
+
+            <div class="order-list" id="orderList"></div>
+          </section>
+
+          <section class="account-tab" data-section="wishlist">
+            <h2>Wishlist</h2>
+            <p>Everything you've saved for later, in one place.</p>
+
+            <div class="wishlist-empty" id="accountWishlistEmpty" style="display:none;">
+              <p>❤️ Your wishlist is empty.</p>
+              <p style="font-family:var(--body); text-transform:none; letter-spacing:normal; font-size:13px; margin:-14px 0 24px; color:var(--smoke);">
+                Save the pieces you love and they'll show up right here.
+              </p>
+              <a href="../index.html" class="btn btn-solid">Continue Shopping →</a>
+            </div>
+
+            <div class="grid" id="accountWishlistGrid"></div>
+          </section>
+
+          <section class="account-tab" data-section="addresses">
+            <h2>Addresses</h2>
+            <p>Manage your shipping addresses.</p>
+
+            <div id="addressesLoading" class="pd-loading" style="padding:60px 20px;">Loading your addresses…</div>
+            <div id="addressesError" class="account-coming-soon" style="display:none; border-color:var(--burgundy-light); color:var(--burgundy-light);"></div>
+            <div id="addressesEmpty" class="wishlist-empty" style="display:none; padding:50px 20px;">
+              <p>📍 No saved addresses yet.</p>
+              <p style="font-family:var(--body); text-transform:none; letter-spacing:normal; font-size:13px; margin:-14px 0 24px; color:var(--smoke);">
+                Save an address to speed up checkout next time.
+              </p>
+              <button class="btn btn-solid" id="addAddressEmptyBtn">+ Add Address</button>
+            </div>
+
+            <div class="address-list" id="addressList"></div>
+
+            <button class="btn btn-solid" id="addAddressBtn" style="margin-top:8px; display:none;">+ Add New Address</button>
+
+            <form class="account-profile-form" id="addressForm" style="display:none; margin-top:28px;" novalidate>
+              <h3 id="addressFormTitle" style="font-size:18px;">Add New Address</h3>
+              <input type="hidden" id="addressFormId">
+              <div class="field-group">
+                <label class="field-label" for="addrLabel">Label</label>
+                <input class="field-input" type="text" id="addrLabel" placeholder="Home, Work, etc.">
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="addrFullName">Full Name</label>
+                <input class="field-input" type="text" id="addrFullName" required>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="addrPhone">Phone Number</label>
+                <input class="field-input" type="tel" id="addrPhone" required>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="addrStreet">Street Address</label>
+                <input class="field-input" type="text" id="addrStreet" required>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="addrCity">City</label>
+                <input class="field-input" type="text" id="addrCity" required>
+              </div>
+              <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                <input type="checkbox" id="addrIsDefault" style="width:auto; accent-color:var(--burgundy-light);">
+                <span class="field-label" style="margin:0; cursor:pointer;">Set as default address</span>
+              </label>
+              <div class="pd-review-form-msg" id="addressFormMsg"></div>
+              <div class="account-form-actions">
+                <button type="submit" class="btn btn-solid" id="saveAddressBtn">Save Address</button>
+                <button type="button" class="btn" id="cancelAddressBtn">Cancel</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="account-tab" data-section="settings">
+            <h2>Account Settings</h2>
+            <p>Manage your password and account preferences.</p>
+            <div class="account-coming-soon">Coming in the next phase.</div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo-mark"><img src="../assests/images/product/logo.png" alt="Soltr"></div>
+        <p>Premium streetwear out of Egypt. Heavyweight cotton, boxy fit, built to last.</p>
+        <div class="social-row">
+          <a href="https://www.instagram.com/soltr_wear" target="_blank" rel="noopener" aria-label="Instagram">IG</a>
+          <a href="https://www.facebook.com/soltrwear" target="_blank" rel="noopener" aria-label="Facebook">FB</a>
+        </div>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="../index.html#shop">All Tees</a></li>
+          <li><a href="../index.html#shop">Boxy Tees</a></li>
+          <li><a href="../index.html#about">Our Story</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Policies</h4>
+        <ul>
+          <li><a href="https://soltrwear.com/policies/refund-policy" target="_blank" rel="noopener">Return &amp; Refund</a></li>
+          <li><a href="https://soltrwear.com/policies/shipping-policy" target="_blank" rel="noopener">Shipping Policy</a></li>
+          <li><a href="https://soltrwear.com/policies/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a></li>
+          <li><a href="https://soltrwear.com/policies/terms-of-service" target="_blank" rel="noopener">Terms of Service</a></li>
+          <li><a href="https://soltrwear.com/policies/contact-information" target="_blank" rel="noopener">Contact Information</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Stay In The Loop</h4>
+        <form class="newsletter" onsubmit="return false;">
+          <input type="email" placeholder="your@email.com" required>
+          <button type="submit">Join →</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Soltr Wear. All rights reserved.</span>
+      <span>Not for everyone.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- CART -->
+<div class="overlay" id="overlay"></div>
+<aside class="cart-drawer" id="cartDrawer" aria-label="Shopping cart">
+  <div class="cart-head">
+    <h3>Your Bag</h3>
+    <button id="cartCloseBtn" aria-label="Close cart" style="font-family:var(--mono); font-size:12px;">CLOSE ✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-foot">
+    <div class="cart-sub"><span>Subtotal</span><span id="cartSubtotal">LE 0.00</span></div>
+    <div class="cart-note">Free shipping all over Egypt. Taxes &amp; final total confirmed at checkout.</div>
+    <a href="#" id="checkoutBtn" class="checkout-btn" target="_blank" rel="noopener">Checkout via WhatsApp</a>
+  </div>
+</aside>
+
+<script src="../js/config.js"></script>
+<script src="../js/customer-auth.js"></script>
+<script src="account.js"></script>
+</body>
+</html>

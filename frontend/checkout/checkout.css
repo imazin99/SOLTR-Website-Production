@@ -1,0 +1,791 @@
+/* ═══════════════════════════════════════════════════════════════
+   SOLTR — checkout.css
+   Styles every .co-* class in checkout.html.
+   All colour/font/motion tokens come from style.css :root.
+   This file adds layout and components only.
+═══════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────
+   HEADER OVERRIDES
+   The checkout header reuses style.css <header> rules but swaps
+   the right-side content (breadcrumb + secure badge instead of
+   cart button).
+───────────────────────────────────────────────────────────────*/
+.co-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.co-breadcrumb-link {
+  color: var(--smoke);
+  transition: color .2s var(--ease);
+}
+.co-breadcrumb-link:hover { color: var(--bone); }
+
+.co-breadcrumb-sep {
+  color: var(--line);
+  font-size: 10px;
+}
+
+.co-breadcrumb-current {
+  color: var(--bone);
+}
+
+.co-secure-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--smoke);
+}
+
+.co-secure-icon { font-size: 13px; }
+
+@media (max-width: 560px) {
+  .co-secure-badge { display: none; }
+  .co-breadcrumb   { font-size: 10px; }
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   PAGE SHELL
+───────────────────────────────────────────────────────────────*/
+.co-main {
+  min-height: calc(100vh - 200px);
+  padding: 52px 0 80px;
+}
+
+.co-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   PAGE HEADING
+───────────────────────────────────────────────────────────────*/
+.co-page-head {
+  margin-bottom: 44px;
+}
+
+.co-page-title {
+  font-family: var(--display);
+  font-size: clamp(38px, 6vw, 72px);
+  text-transform: uppercase;
+  line-height: .98;
+  letter-spacing: .01em;
+  color: var(--paper);
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   GLOBAL ERROR BANNER
+───────────────────────────────────────────────────────────────*/
+.co-error-banner {
+  display: none;  /* JS removes hidden attr; then this shows it */
+  background: rgba(110, 20, 35, .18);
+  border: 1px solid var(--burgundy);
+  border-left: 3px solid var(--burgundy-light);
+  color: var(--bone);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .04em;
+  padding: 14px 18px;
+  margin-bottom: 28px;
+  line-height: 1.55;
+}
+
+/* When JS sets hidden=false (removes [hidden]) the display:none above
+   keeps it invisible — JS must also toggle display or the hidden attr.
+   We handle both approaches: */
+.co-error-banner:not([hidden]) { display: block; }
+
+
+/* ─────────────────────────────────────────────────────────────
+   TWO-COLUMN GRID
+───────────────────────────────────────────────────────────────*/
+.co-grid {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 32px;
+  align-items: start;
+}
+
+.co-left  { display: flex; flex-direction: column; gap: 28px; }
+.co-right { position: sticky; top: 90px; }   /* sticks below the sticky header */
+
+
+/* ─────────────────────────────────────────────────────────────
+   SECTION ANATOMY  (number + title line)
+───────────────────────────────────────────────────────────────*/
+.co-section {
+  background: var(--black-2);
+  border: 1px solid var(--line);
+  padding: 32px 28px;
+}
+
+.co-section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 28px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.co-section-num {
+  font-family: var(--display);
+  font-size: 38px;
+  line-height: 1;
+  color: var(--burgundy-light);
+  opacity: .55;
+  flex: none;
+}
+
+.co-section-title {
+  font-family: var(--display);
+  font-size: 22px;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  line-height: 1;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   FORM GRID
+───────────────────────────────────────────────────────────────*/
+.co-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 24px;
+}
+
+/* Fields spanning both columns */
+.co-field--full {
+  grid-column: span 2;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   FORM FIELDS
+───────────────────────────────────────────────────────────────*/
+.co-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.co-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--smoke);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.co-required {
+  color: var(--burgundy-light);
+  font-size: 13px;
+  line-height: 1;
+}
+
+.co-optional {
+  color: var(--smoke);
+  font-size: 9px;
+  letter-spacing: .1em;
+  opacity: .7;
+  font-style: italic;
+  text-transform: none;
+  font-family: var(--body);
+}
+
+/* ── Input base ── */
+.co-input {
+  background: var(--black-3);
+  border: 1px solid var(--line);
+  color: var(--bone);
+  font-family: var(--body);
+  font-size: 14px;
+  padding: 13px 16px;
+  width: 100%;
+  outline: none;
+  transition: border-color .2s var(--ease), background .2s var(--ease);
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0;   /* keep the sharp aesthetic */
+}
+
+.co-input::placeholder {
+  color: var(--smoke);
+  opacity: .6;
+}
+
+.co-input:focus {
+  border-color: rgba(236, 231, 221, .35);
+  background: rgba(28, 28, 28, .9);
+}
+
+/* Error state — applied by JS */
+.co-input.co-input-error {
+  border-color: var(--burgundy-light);
+  background: rgba(110, 20, 35, .07);
+}
+.co-input.co-input-error:focus {
+  border-color: var(--burgundy-light);
+}
+
+/* Textarea */
+.co-textarea {
+  resize: vertical;
+  min-height: 88px;
+  line-height: 1.55;
+}
+
+/* ── Per-field messages ── */
+.co-field-error {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .04em;
+  color: var(--burgundy-light);
+  min-height: 16px;   /* reserve space so layout doesn't jump */
+}
+
+.co-field-hint {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .03em;
+  color: var(--smoke);
+  opacity: .7;
+  line-height: 1.5;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   PAYMENT METHOD CARDS
+───────────────────────────────────────────────────────────────*/
+
+/* Hide the actual radio input — the label is the clickable surface */
+.co-payment-radio {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+.co-payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.co-payment-card {
+  display: block;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: var(--black-3);
+  transition: border-color .22s var(--ease), background .22s var(--ease);
+  position: relative;
+}
+
+/* Hover state */
+.co-payment-card:hover {
+  border-color: rgba(236, 231, 221, .22);
+  background: rgba(28, 28, 28, .95);
+}
+
+/* Selected state — uses :has() so no JS needed for the visual */
+.co-payment-card:has(.co-payment-radio:checked) {
+  border-color: var(--burgundy-light);
+  background: rgba(110, 20, 35, .1);
+}
+
+/* Focused-via-keyboard state */
+.co-payment-card:has(.co-payment-radio:focus-visible) {
+  outline: 2px solid var(--burgundy-light);
+  outline-offset: 2px;
+}
+
+.co-payment-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+}
+
+.co-payment-icon {
+  font-size: 22px;
+  flex: none;
+  width: 36px;
+  text-align: center;
+  filter: grayscale(.2);
+}
+
+.co-payment-text {
+  flex: 1;
+}
+
+.co-payment-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--bone);
+  margin-bottom: 4px;
+}
+
+.co-payment-desc {
+  font-size: 12.5px;
+  color: var(--smoke);
+  line-height: 1.45;
+}
+
+/* Checkmark — invisible by default, shown when selected */
+.co-payment-check {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--burgundy-light);
+  flex: none;
+  opacity: 0;
+  transform: scale(.6);
+  transition: opacity .2s var(--ease), transform .2s var(--ease);
+}
+
+.co-payment-card:has(.co-payment-radio:checked) .co-payment-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Highlight the method name when selected */
+.co-payment-card:has(.co-payment-radio:checked) .co-payment-name {
+  color: var(--paper);
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   PLACE ORDER BUTTON
+───────────────────────────────────────────────────────────────*/
+.co-submit-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.co-submit-btn {
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  background: var(--bone);
+  color: var(--black);
+  border: 1px solid var(--bone);
+  padding: 18px 28px;
+  cursor: pointer;
+  transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
+}
+
+.co-submit-btn:hover:not(:disabled) {
+  background: var(--burgundy-light);
+  color: var(--paper);
+  border-color: var(--burgundy-light);
+}
+
+.co-submit-btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.co-submit-btn:focus-visible {
+  outline: 2px solid var(--burgundy-light);
+  outline-offset: 3px;
+}
+
+.co-submit-note {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .04em;
+  color: var(--smoke);
+  line-height: 1.6;
+  text-align: center;
+}
+
+.co-submit-note a {
+  color: var(--smoke);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color .18s;
+}
+.co-submit-note a:hover { color: var(--bone); }
+
+
+/* ─────────────────────────────────────────────────────────────
+   ORDER SUMMARY BOX
+───────────────────────────────────────────────────────────────*/
+.co-summary-box {
+  background: var(--black-2);
+  border: 1px solid var(--line);
+  padding: 28px 24px;
+}
+
+/* Reuse the same section-head styles from the form */
+.co-summary-box .co-section-head {
+  margin-bottom: 22px;
+  padding-bottom: 16px;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   ORDER ITEMS LIST  (rows injected by checkout.js)
+───────────────────────────────────────────────────────────────*/
+.co-items-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.co-items-loading {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .05em;
+  color: var(--smoke);
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* ── Each cart item row ── */
+.co-item {
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(42, 42, 42, .6);
+}
+
+.co-item:last-child { border-bottom: none; }
+
+.co-item-img {
+  width: 60px;
+  height: 76px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  display: block;
+  background: var(--black-3);
+}
+
+.co-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.co-item-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.co-item-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--smoke);
+}
+
+/* ── Quantity controls + price ── */
+.co-item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.co-qty-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--line);
+}
+
+.co-qty-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 15px;
+  color: var(--smoke);
+  background: var(--black-3);
+  border: none;
+  cursor: pointer;
+  transition: background .18s, color .18s;
+  flex: none;
+}
+
+.co-qty-btn:hover { background: var(--line); color: var(--bone); }
+.co-qty-btn:focus-visible { outline: 2px solid var(--burgundy-light); outline-offset: -2px; }
+
+.co-qty-num {
+  font-family: var(--mono);
+  font-size: 12px;
+  min-width: 28px;
+  text-align: center;
+  padding: 0 4px;
+  background: var(--black-2);
+}
+
+.co-item-price {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--bone);
+  white-space: nowrap;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   SUMMARY DIVIDER
+───────────────────────────────────────────────────────────────*/
+.co-summary-divider {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 18px 0 16px;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   TOTALS
+───────────────────────────────────────────────────────────────*/
+.co-totals {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.co-tot-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(42, 42, 42, .5);
+}
+
+.co-tot-row:last-child { border-bottom: none; }
+
+.co-tot-label {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--smoke);
+}
+
+.co-tot-value {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--bone);
+}
+
+/* Grand total row */
+.co-tot-grand {
+  padding-top: 14px;
+  margin-top: 4px;
+  border-top: 1px solid var(--line);
+  border-bottom: none;
+}
+
+.co-grand-label {
+  font-family: var(--display);
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  color: var(--paper);
+}
+
+.co-grand-value {
+  font-family: var(--display);
+  font-size: 22px;
+  color: var(--paper);
+}
+
+/* Free shipping badge */
+.co-free-shipping {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--bone);
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   SHIPPING ASSURANCES  (below totals)
+───────────────────────────────────────────────────────────────*/
+.co-assurance-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.co-assurance-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--smoke);
+}
+
+.co-assurance-icon {
+  font-size: 14px;
+  flex: none;
+  width: 20px;
+  text-align: center;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   EMPTY CART STATE
+───────────────────────────────────────────────────────────────*/
+.co-empty {
+  text-align: center;
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.co-empty p {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--smoke);
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   RESPONSIVE  —  ≤ 1024px  (tablet landscape)
+───────────────────────────────────────────────────────────────*/
+@media (max-width: 1024px) {
+  .co-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* On tablet, show summary ABOVE the form */
+  .co-right {
+    position: static;           /* un-stick */
+    order: -1;                  /* move above left column */
+  }
+
+  .co-left { gap: 24px; }
+
+  .co-page-title { font-size: clamp(36px, 7vw, 58px); }
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   RESPONSIVE  —  ≤ 768px  (tablet portrait / large phones)
+───────────────────────────────────────────────────────────────*/
+@media (max-width: 768px) {
+  .co-main { padding: 36px 0 60px; }
+  .co-wrap { padding: 0 18px; }
+
+  .co-section { padding: 24px 18px; }
+
+  .co-form {
+    grid-template-columns: 1fr;   /* stack all fields */
+    gap: 16px;
+  }
+
+  .co-field--full { grid-column: span 1; }
+
+  .co-summary-box { padding: 22px 18px; }
+
+  .co-page-head { margin-bottom: 28px; }
+  .co-left { gap: 18px; }
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   RESPONSIVE  —  ≤ 560px  (phones)
+───────────────────────────────────────────────────────────────*/
+@media (max-width: 560px) {
+  .co-main { padding: 28px 0 50px; }
+  .co-wrap { padding: 0 14px; }
+
+  .co-section { padding: 20px 16px; }
+  .co-section-num { font-size: 28px; }
+  .co-section-title { font-size: 18px; }
+
+  .co-payment-inner { gap: 12px; padding: 14px 16px; }
+  .co-payment-icon  { font-size: 18px; width: 28px; }
+  .co-payment-name  { font-size: 11px; }
+  .co-payment-desc  { font-size: 11.5px; }
+
+  .co-submit-btn  { padding: 16px; font-size: 12px; }
+
+  .co-summary-box { padding: 18px 14px; }
+
+  .co-item { grid-template-columns: 52px 1fr auto; gap: 10px; }
+  .co-item-img { width: 52px; height: 66px; }
+  .co-item-name { font-size: 12.5px; }
+
+  .co-grand-label { font-size: 17px; }
+  .co-grand-value { font-size: 19px; }
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   RESPONSIVE  —  ≤ 375px  (small phones)
+───────────────────────────────────────────────────────────────*/
+@media (max-width: 375px) {
+  .co-wrap { padding: 0 12px; }
+  .co-section { padding: 18px 14px; }
+
+  .co-input { padding: 11px 13px; font-size: 13.5px; }
+
+  .co-item { gap: 8px; padding: 12px 0; }
+  .co-item-img { width: 48px; height: 60px; }
+
+  .co-qty-btn { width: 24px; height: 24px; font-size: 14px; }
+  .co-qty-num { min-width: 24px; font-size: 11px; }
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   REDUCED MOTION
+───────────────────────────────────────────────────────────────*/
+@media (prefers-reduced-motion: reduce) {
+  .co-payment-card,
+  .co-payment-check,
+  .co-submit-btn,
+  .co-input {
+    transition: none !important;
+  }
+}

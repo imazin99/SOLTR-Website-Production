@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOLTR — Checkout</title>
+  <meta name="description" content="Complete your SOLTR order. Fast delivery all over Egypt.">
+
+  <!-- Fonts — identical to index.html -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=JetBrains+Mono:wght@400;500;600;700&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+
+  <!-- Base design tokens + reusable components from the storefront -->
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Checkout-specific layout and components -->
+  <link rel="stylesheet" href="checkout.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     TOPBAR
+══════════════════════════════════════════════ -->
+<div class="topbar">🚚 Free Shipping All Over Egypt &nbsp;·&nbsp; SS'26 Summer Drop Live Now</div>
+
+
+<!-- ══════════════════════════════════════════════
+     HEADER  (simplified — no cart button)
+══════════════════════════════════════════════ -->
+<header id="siteHeader" class="scrolled">
+
+  <a href="../index.html" class="logo-mark" aria-label="Back to SOLTR store">
+    <img src="../assests/images/product/logo.png" alt="Soltr">
+  </a>
+
+  <!-- Page breadcrumb -->
+  <div class="co-breadcrumb" aria-label="Breadcrumb">
+    <a href="../index.html" class="co-breadcrumb-link">Shop</a>
+    <span class="co-breadcrumb-sep" aria-hidden="true">/</span>
+    <span class="co-breadcrumb-current">Checkout</span>
+  </div>
+
+  <!-- Secure checkout badge -->
+  <div class="co-secure-badge" aria-label="Secure checkout">
+    <span class="co-secure-icon" aria-hidden="true">🔒</span>
+    <span class="co-secure-text">Secure Checkout</span>
+  </div>
+
+</header>
+
+
+<!-- ══════════════════════════════════════════════
+     MAIN  CHECKOUT CONTENT
+══════════════════════════════════════════════ -->
+<main class="co-main" id="co-main">
+  <div class="co-wrap">
+
+    <!-- ── Page heading ── -->
+    <div class="co-page-head">
+      <div class="eyebrow">SS'26 Drop</div>
+      <h1 class="co-page-title">Checkout</h1>
+    </div>
+
+    <!-- ── Global error banner (shown by JS on validation failure) ── -->
+    <div
+      class="co-error-banner"
+      id="co-error-banner"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      hidden
+    ></div>
+
+    <!-- ════════════════════════════════════════
+         TWO-COLUMN GRID
+         Left  → form + payment
+         Right → order summary (sticky on desktop)
+    ════════════════════════════════════════ -->
+    <div class="co-grid">
+
+      <!-- ╔══════════════════════════════════╗
+           ║  LEFT COLUMN  — Form + Payment  ║
+           ╚══════════════════════════════════╝ -->
+      <div class="co-left">
+
+        <!-- ─────────────────────────────────────
+             SECTION 1 — Customer Information
+        ───────────────────────────────────── -->
+        <section class="co-section" aria-labelledby="co-customer-heading">
+
+          <div class="co-section-head">
+            <span class="co-section-num" aria-hidden="true">01</span>
+            <h2 class="co-section-title" id="co-customer-heading">Customer Information</h2>
+          </div>
+
+          <div class="co-form">
+
+            <!-- Full Name -->
+            <div class="co-field">
+              <label class="co-label" for="co-name">
+                Full Name <span class="co-required" aria-label="required">*</span>
+              </label>
+              <input
+                class="co-input"
+                type="text"
+                id="co-name"
+                name="name"
+                placeholder="Ahmed Samy"
+                autocomplete="name"
+                required
+                aria-required="true"
+                aria-describedby="co-name-error"
+              >
+              <span class="co-field-error" id="co-name-error" role="alert" aria-live="polite"></span>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="co-field">
+              <label class="co-label" for="co-phone">
+                Phone Number <span class="co-required" aria-label="required">*</span>
+              </label>
+              <input
+                class="co-input"
+                type="tel"
+                id="co-phone"
+                name="phone"
+                placeholder="01012345678"
+                autocomplete="tel"
+                required
+                aria-required="true"
+                aria-describedby="co-phone-error"
+              >
+              <span class="co-field-error" id="co-phone-error" role="alert" aria-live="polite"></span>
+            </div>
+
+            <!-- Email (optional) -->
+            <div class="co-field">
+              <label class="co-label" for="co-email">
+                Email Address <span class="co-optional">(optional)</span>
+              </label>
+              <input
+                class="co-input"
+                type="email"
+                id="co-email"
+                name="email"
+                placeholder="ahmed@example.com"
+                autocomplete="email"
+                aria-describedby="co-email-hint"
+              >
+              <span class="co-field-hint" id="co-email-hint">
+                We'll send your order confirmation here if provided.
+              </span>
+            </div>
+
+            <!-- City -->
+            <div class="co-field">
+              <label class="co-label" for="co-city">
+                City <span class="co-required" aria-label="required">*</span>
+              </label>
+              <input
+                class="co-input"
+                type="text"
+                id="co-city"
+                name="city"
+                placeholder="Cairo"
+                autocomplete="address-level2"
+                required
+                aria-required="true"
+                aria-describedby="co-city-error"
+              >
+              <span class="co-field-error" id="co-city-error" role="alert" aria-live="polite"></span>
+            </div>
+
+            <!-- Address -->
+            <div class="co-field co-field--full">
+              <label class="co-label" for="co-address">
+                Delivery Address <span class="co-required" aria-label="required">*</span>
+              </label>
+              <input
+                class="co-input"
+                type="text"
+                id="co-address"
+                name="address"
+                placeholder="Street name, building number, area…"
+                autocomplete="street-address"
+                required
+                aria-required="true"
+                aria-describedby="co-address-error"
+              >
+              <span class="co-field-error" id="co-address-error" role="alert" aria-live="polite"></span>
+            </div>
+
+            <!-- Notes (optional) -->
+            <div class="co-field co-field--full">
+              <label class="co-label" for="co-notes">
+                Order Notes <span class="co-optional">(optional)</span>
+              </label>
+              <textarea
+                class="co-input co-textarea"
+                id="co-notes"
+                name="notes"
+                rows="3"
+                placeholder="Special delivery instructions, landmarks, anything we should know…"
+                aria-describedby="co-notes-hint"
+              ></textarea>
+              <span class="co-field-hint" id="co-notes-hint">
+                Not required. Leave blank if no special instructions.
+              </span>
+            </div>
+
+          </div><!-- /co-form -->
+        </section>
+
+
+        <!-- ─────────────────────────────────────
+             SECTION 2 — Payment Method
+        ───────────────────────────────────── -->
+        <section class="co-section" aria-labelledby="co-payment-heading">
+
+          <div class="co-section-head">
+            <span class="co-section-num" aria-hidden="true">02</span>
+            <h2 class="co-section-title" id="co-payment-heading">Payment Method</h2>
+          </div>
+
+          <div
+            class="co-payment-options"
+            role="radiogroup"
+            aria-labelledby="co-payment-heading"
+          >
+
+            <!-- Cash on Delivery -->
+            <label class="co-payment-card" for="pay-cod">
+              <input
+                class="co-payment-radio"
+                type="radio"
+                name="paymentMethod"
+                id="pay-cod"
+                value="COD"
+                checked
+                aria-describedby="pay-cod-desc"
+              >
+              <div class="co-payment-inner">
+                <div class="co-payment-icon" aria-hidden="true">💵</div>
+                <div class="co-payment-text">
+                  <div class="co-payment-name">Cash on Delivery</div>
+                  <div class="co-payment-desc" id="pay-cod-desc">
+                    Pay with cash when your order is delivered to your door.
+                  </div>
+                </div>
+                <div class="co-payment-check" aria-hidden="true">✓</div>
+              </div>
+            </label>
+
+            <!-- Vodafone Cash -->
+            <label class="co-payment-card" for="pay-vodafone">
+              <input
+                class="co-payment-radio"
+                type="radio"
+                name="paymentMethod"
+                id="pay-vodafone"
+                value="VodafoneCash"
+                aria-describedby="pay-vodafone-desc"
+              >
+              <div class="co-payment-inner">
+                <div class="co-payment-icon" aria-hidden="true">📱</div>
+                <div class="co-payment-text">
+                  <div class="co-payment-name">Vodafone Cash</div>
+                  <div class="co-payment-desc" id="pay-vodafone-desc">
+                    Transfer via Vodafone Cash before shipment. We'll send you the number.
+                  </div>
+                </div>
+                <div class="co-payment-check" aria-hidden="true">✓</div>
+              </div>
+            </label>
+
+            <!-- InstaPay -->
+            <label class="co-payment-card" for="pay-instapay">
+              <input
+                class="co-payment-radio"
+                type="radio"
+                name="paymentMethod"
+                id="pay-instapay"
+                value="InstaPay"
+                aria-describedby="pay-instapay-desc"
+              >
+              <div class="co-payment-inner">
+                <div class="co-payment-icon" aria-hidden="true">⚡</div>
+                <div class="co-payment-text">
+                  <div class="co-payment-name">InstaPay</div>
+                  <div class="co-payment-desc" id="pay-instapay-desc">
+                    Pay instantly via InstaPay before shipment. We'll send you the details.
+                  </div>
+                </div>
+                <div class="co-payment-check" aria-hidden="true">✓</div>
+              </div>
+            </label>
+
+          </div><!-- /co-payment-options -->
+
+        </section>
+
+
+        <!-- ─────────────────────────────────────
+             PLACE ORDER BUTTON
+        ───────────────────────────────────── -->
+        <div class="co-submit-wrap">
+          <button
+            class="co-submit-btn"
+            id="co-submit-btn"
+            type="button"
+            aria-label="Place your order"
+          >
+            Place Order →
+          </button>
+          <p class="co-submit-note">
+            By placing your order you agree to our
+            <a href="https://soltrwear.com/policies/terms-of-service" target="_blank" rel="noopener">Terms of Service</a>
+            and
+            <a href="https://soltrwear.com/policies/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a>.
+          </p>
+        </div>
+
+      </div><!-- /co-left -->
+
+
+      <!-- ╔═══════════════════════════════════╗
+           ║  RIGHT COLUMN  — Order Summary   ║
+           ╚═══════════════════════════════════╝ -->
+      <aside class="co-right" aria-label="Order summary">
+
+        <div class="co-summary-box">
+
+          <div class="co-section-head">
+            <span class="co-section-num" aria-hidden="true">03</span>
+            <h2 class="co-section-title">Order Summary</h2>
+          </div>
+
+          <!-- ── Product list (populated by JS) ── -->
+          <div class="co-items-list" id="co-items" aria-label="Items in your order" aria-live="polite">
+            <!-- JS renders items here. Each item has:
+                 thumbnail | name + color + size | qty controls | line total -->
+            <div class="co-items-loading">Loading your cart…</div>
+          </div>
+
+          <!-- ── Divider ── -->
+          <hr class="co-summary-divider">
+
+          <!-- ── Coupon ── -->
+          <div class="co-coupon-box">
+            <div class="co-coupon-row">
+              <input type="text" id="co-coupon-input" class="co-input co-coupon-input"
+                     placeholder="Coupon code" autocomplete="off" aria-label="Coupon code">
+              <button type="button" id="co-coupon-apply-btn" class="co-coupon-apply-btn">Apply</button>
+            </div>
+            <div class="co-coupon-msg" id="co-coupon-msg" aria-live="polite"></div>
+          </div>
+
+          <!-- ── Totals ── -->
+          <div class="co-totals" aria-label="Order totals">
+
+            <div class="co-tot-row">
+              <span class="co-tot-label">Subtotal</span>
+              <span class="co-tot-value" id="co-subtotal" aria-live="polite">—</span>
+            </div>
+
+            <div class="co-tot-row" id="co-discount-row" style="display:none;">
+              <span class="co-tot-label">Discount <span id="co-coupon-applied-code"></span></span>
+              <span class="co-tot-value co-discount-value" id="co-discount" aria-live="polite">—</span>
+            </div>
+
+            <div class="co-tot-row">
+              <span class="co-tot-label">Shipping</span>
+              <span class="co-tot-value" id="co-shipping" aria-live="polite">
+                <span class="co-free-shipping">Free 🇪🇬</span>
+              </span>
+            </div>
+
+            <div class="co-tot-row co-tot-grand">
+              <span class="co-tot-label co-grand-label">Total</span>
+              <span class="co-tot-value co-grand-value" id="co-total" aria-live="polite">—</span>
+            </div>
+
+          </div><!-- /co-totals -->
+
+          <!-- ── Shipping reassurance ── -->
+          <ul class="co-assurance-list" aria-label="Shipping assurances">
+            <li class="co-assurance-item">
+              <span class="co-assurance-icon" aria-hidden="true">🚚</span>
+              Free delivery all over Egypt
+            </li>
+            <li class="co-assurance-item">
+              <span class="co-assurance-icon" aria-hidden="true">↩</span>
+              5-day returns policy
+            </li>
+            <li class="co-assurance-item">
+              <span class="co-assurance-icon" aria-hidden="true">📦</span>
+              Orders shipped within 1–3 business days
+            </li>
+          </ul>
+
+        </div><!-- /co-summary-box -->
+      </aside><!-- /co-right -->
+
+    </div><!-- /co-grid -->
+  </div><!-- /co-wrap -->
+</main>
+
+
+<!-- ══════════════════════════════════════════════
+     FOOTER  (same as index.html)
+══════════════════════════════════════════════ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo-mark"><img src="../assests/images/product/logo.png" alt="Soltr"></div>
+        <p>Premium streetwear out of Egypt. Heavyweight cotton, boxy fit, built to last.</p>
+        <div class="social-row">
+          <a href="https://www.instagram.com/soltr_wear" target="_blank" rel="noopener" aria-label="Instagram">IG</a>
+          <a href="https://www.facebook.com/soltrwear" target="_blank" rel="noopener" aria-label="Facebook">FB</a>
+        </div>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="../index.html#shop">All Tees</a></li>
+          <li><a href="../index.html#shop">Boxy Tees</a></li>
+          <li><a href="../index.html#about">Our Story</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Policies</h4>
+        <ul>
+          <li><a href="../pages/policy.html?slug=return-refund">Return &amp; Refund</a></li>
+          <li><a href="../pages/policy.html?slug=shipping-policy">Shipping Policy</a></li>
+          <li><a href="../pages/policy.html?slug=privacy-policy">Privacy Policy</a></li>
+          <li><a href="../pages/policy.html?slug=terms-of-service">Terms of Service</a></li>
+          <li><a href="../pages/policy.html?slug=contact-information">Contact Information</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Stay In The Loop</h4>
+        <form class="newsletter" onsubmit="return false;">
+          <input type="email" placeholder="your@email.com" required>
+          <button type="submit">Join →</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Soltr Wear. All rights reserved.</span>
+      <span>Not for everyone.</span>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ══════════════════════════════════════════════
+     SCRIPTS
+     checkout.js handles:
+       - Reading cart from localStorage
+       - Rendering order summary items
+       - Quantity +/- controls
+       - Recalculating totals
+       - Field validation
+       - Posting order to /api/orders
+       - Redirecting to thankyou.html
+══════════════════════════════════════════════ -->
+<script src="../js/config.js"></script>
+<script src="checkout.js"></script>
+
+</body>
+</html>
