@@ -10,7 +10,6 @@ const API = window.SOLTR_CONFIG.API;
 const IMG = window.SOLTR_CONFIG.IMG;
 function imgUrl(filename) { return `${IMG}/uploads/products/${filename}`; }
 
-const WHATSAPP_NUMBER = "201111455086";
 const CART_KEY = 'cart'; // same key every other page reads/writes
 
 function fmt(n) { return "LE " + Number(n).toFixed(2); }
@@ -661,13 +660,6 @@ function renderCart() {
 
   const subtotal = cart.reduce((s, i) => { const p = findProduct(i.productId); return p ? s + p.price * i.qty : s; }, 0);
   subEl.textContent = fmt(subtotal);
-
-  const lines = cart.map(i => {
-    const p = findProduct(i.productId);
-    return p ? `- ${p.name} (${p.colors[0]}) - Size ${i.size} x ${i.qty} - ${fmt(p.price * i.qty)}` : '';
-  }).filter(Boolean).join("\n");
-  const msg = cart.length ? `Hey Soltr! I'd like to order:\n${lines}\n\nSubtotal: ${fmt(subtotal)}` : `Hey Soltr! I'd like to place an order.`;
-  document.getElementById("checkoutBtn").href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
 
   persistCart();
 }
