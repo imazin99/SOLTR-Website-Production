@@ -26,8 +26,8 @@
   const LOCAL_IMG_BASE = 'http://localhost:5000';
 
   // TODO: set these to your deployed backend's real URL before going live.
-  const PRODUCTION_API_BASE = 'https://vibrant-success-production-1a11.up.railway.app/api';
-const PRODUCTION_IMG_BASE = 'https://vibrant-success-production-1a11.up.railway.app';
+  const PRODUCTION_API_BASE = 'https://soltr-website-production-production.up.railway.app/api';
+const PRODUCTION_IMG_BASE = 'https://soltr-website-production-production.up.railway.app';
 
   window.SOLTR_CONFIG = {
     API: isLocal ? LOCAL_API_BASE : PRODUCTION_API_BASE,
