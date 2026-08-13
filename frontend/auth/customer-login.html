@@ -175,7 +175,7 @@
 
     if (result.ok) {
       submitBtn.textContent = "Redirecting…";
-      window.location.href = "index.html";
+      window.location.href = "../index.html";
     } else if (result.emailNotVerified) {
       submitBtn.classList.remove("loading");
       errorEl.textContent = result.error || 'Please verify your email address before continuing.';
