@@ -33,6 +33,10 @@ function summarize(reviews) {
      ?search=...       matches customerName, text, or productName (admin search)
      ?sort=newest|top  newest = most recent first (default), top = highest-rated first
      ?limit=N          cap the number of reviews returned (Home page slider)
+     ?status=pending|approved|rejected   ADMIN ONLY (requires a valid admin
+                        token — see optionalAdminAuth.js). Ignored entirely
+                        for non-admin callers, who are always restricted to
+                        approved reviews regardless of this param.
 
    averageRating / totalCount / distribution are always computed over
    the FILTERED set — e.g. with ?productId=, they describe that one
@@ -40,7 +44,8 @@ function summarize(reviews) {
 ═══════════════════════════════════════════════════ */
 exports.getReviews = async (req, res) => {
   try {
-    const { productId, search, sort = 'newest', limit } = req.query;
+    const { productId, search, sort = 'newest', limit, status } = req.query;
+    const isAdmin = Boolean(req.admin);
 
     const filter = {};
     if (productId) {
@@ -53,6 +58,21 @@ exports.getReviews = async (req, res) => {
       const safe = search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const re   = new RegExp(safe, 'i');
       filter.$or = [{ customerName: re }, { text: re }, { productName: re }];
+    }
+
+    /* Moderation enforcement — the one line that actually matters here.
+       A non-admin caller (the public storefront) can NEVER see anything
+       but approved reviews, no matter what ?status= it sends. Only a
+       verified admin token (see optionalAdminAuth.js) can request
+       pending/rejected/all — and even then, only a real enum value is
+       accepted, never passed through unvalidated. */
+    if (isAdmin) {
+      if (status && ['pending', 'approved', 'rejected'].includes(status)) {
+        filter.status = status;
+      }
+      // no status param from an admin = all statuses, for the dashboard's default "All" view
+    } else {
+      filter.status = 'approved';
     }
 
     let reviews = await Review.find(filter);
@@ -116,6 +136,7 @@ exports.addReview = async (req, res) => {
       rating: ratingNum,
       text: text.trim(),
       verified: false,
+      status: 'pending', // requires admin approval before it's publicly visible — see getReviews
     });
 
     res.status(201).json(review);
@@ -141,7 +162,7 @@ exports.updateReview = async (req, res) => {
     const review = await Review.findById(req.params.id);
     if (!review) return res.status(404).json({ message: 'Review not found' });
 
-    const { customerName, rating, text } = req.body;
+    const { customerName, rating, text, status } = req.body;
 
     if (customerName !== undefined) {
       if (!customerName.trim()) return res.status(400).json({ message: 'Reviewer name cannot be empty' });
@@ -157,6 +178,12 @@ exports.updateReview = async (req, res) => {
     if (text !== undefined) {
       if (!text.trim()) return res.status(400).json({ message: 'Review text cannot be empty' });
       review.text = text.trim();
+    }
+    if (status !== undefined) {
+      if (!['pending', 'approved', 'rejected'].includes(status)) {
+        return res.status(400).json({ message: 'status must be one of: pending, approved, rejected' });
+      }
+      review.status = status; // this route is already admin-only (see routes/reviews.js) — no separate moderation endpoint needed
     }
 
     await review.save();

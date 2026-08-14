@@ -1165,14 +1165,16 @@ async function renderReviews() {
   const tbody     = document.getElementById("reviewsTbody");
   const search    = document.getElementById('reviewSearch')?.value.trim() || '';
   const productId = document.getElementById('reviewProductFilter')?.value || '';
+  const status    = document.getElementById('reviewStatusFilter')?.value || '';
 
-  tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;
+  tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;
     font-family:var(--mono);font-size:12px;color:var(--smoke);">Loading reviews…</td></tr>`;
 
   try {
     const params = new URLSearchParams();
     if (search)    params.set('search', search);
     if (productId) params.set('productId', productId);
+    if (status)    params.set('status', status);
     params.set('sort', 'newest');
 
     const res  = await fetch(`${API}/reviews?${params.toString()}`);
@@ -1180,32 +1182,98 @@ async function renderReviews() {
     const data = await res.json();
     const reviews = data.reviews || [];
 
+    updateReviewsPendingBadge(reviews);
+
     if (!reviews.length) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;
         font-family:var(--mono);font-size:12px;color:var(--smoke);">No reviews found.</td></tr>`;
       return;
     }
 
+    const statusBadgeClass = { pending: 'badge-pending', approved: 'badge-confirmed', rejected: 'badge-cancelled' };
+
     tbody.innerHTML = reviews.map(r => {
       const snippet = r.text.length > 70 ? r.text.slice(0, 70) + '…' : r.text;
+      const reviewStatus = r.status || 'approved'; // legacy safety net — see migrateReviewStatus.js
+      const safeName = r.customerName.replace(/'/g, "\\'");
+
+      let actions = '';
+      if (reviewStatus === 'pending') {
+        actions = `
+          <button class="action-btn" onclick="approveReview('${r._id}')">Approve</button>
+          <button class="action-btn del-btn" onclick="rejectReview('${r._id}', '${safeName}')">Reject</button>`;
+      } else {
+        actions = `<button class="action-btn del-btn" onclick="deleteReview('${r._id}', '${safeName}')">Delete</button>`;
+      }
+
       return `
         <tr>
           <td style="font-size:13px;">${r.customerName}</td>
           <td style="font-family:var(--mono);font-size:12px;color:var(--burgundy-light);">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</td>
           <td style="font-family:var(--mono);font-size:12px;color:var(--smoke);">${r.productName}</td>
           <td style="font-size:12.5px;color:var(--smoke);max-width:260px;">${snippet}</td>
+          <td><span class="badge ${statusBadgeClass[reviewStatus] || ''}">${reviewStatus.toUpperCase()}</span></td>
           <td><span class="badge ${r.verified ? 'badge-active' : 'badge-inactive'}">${r.verified ? 'Verified' : 'Unverified'}</span></td>
           <td style="font-family:var(--mono);font-size:11px;color:var(--smoke);">${fmtDate(r.createdAt)}</td>
-          <td>
-            <button class="action-btn del-btn" onclick="deleteReview('${r._id}', '${r.customerName.replace(/'/g, "\\'")}')">Delete</button>
-          </td>
+          <td style="white-space:nowrap;">${actions}</td>
         </tr>`;
     }).join("");
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--burgundy-light);
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--burgundy-light);
       padding:30px;font-family:var(--mono);font-size:12px;">⚠ Failed to load reviews.
       <br><span style="color:var(--smoke);font-size:10px;">Please try again shortly.</span></td></tr>`;
     console.error('Reviews fetch error:', err);
+  }
+}
+
+/** Keeps the sidebar's Reviews pending-count badge in sync with the currently-loaded page of reviews. */
+function updateReviewsPendingBadge(reviews) {
+  fetch(`${API}/reviews?status=pending`)
+    .then(res => res.ok ? res.json() : null)
+    .then(data => {
+      const count = data?.reviews?.length ?? 0;
+      const badge = document.getElementById('reviewsPendingBadge');
+      if (!badge) return;
+      badge.textContent = count;
+      badge.style.display = count > 0 ? 'flex' : 'none';
+    })
+    .catch(() => {}); // non-critical — badge just won't update this cycle
+}
+
+async function approveReview(id) {
+  try {
+    const res = await fetch(`${API}/reviews/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'approved' }),
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.message || 'Server error');
+    }
+    showToast('Review approved — now visible on the storefront.');
+    renderReviews();
+  } catch (err) {
+    showToast('Failed to approve review: ' + err.message, 'error');
+  }
+}
+
+async function rejectReview(id, customerName) {
+  if (!confirm(`Reject the review from "${customerName}"? It will be hidden from the public store.`)) return;
+  try {
+    const res = await fetch(`${API}/reviews/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'rejected' }),
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.message || 'Server error');
+    }
+    showToast('Review rejected.');
+    renderReviews();
+  } catch (err) {
+    showToast('Failed to reject review: ' + err.message, 'error');
   }
 }
 
@@ -1229,6 +1297,7 @@ document.getElementById('reviewSearch').addEventListener('input', function () {
   _reviewSearchTimer = setTimeout(() => renderReviews(), 350);
 });
 document.getElementById('reviewProductFilter').addEventListener('change', () => renderReviews());
+document.getElementById('reviewStatusFilter').addEventListener('change', () => renderReviews());
 
 /* ════════════════════════════════
    TOGGLE / DELETE COUPON

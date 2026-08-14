@@ -883,8 +883,25 @@ textarea.field-input { resize: vertical; min-height: 80px; }
   .form-grid .full { grid-column: span 1; }
   .filter-row { gap: 6px; }
   .login-card { padding: 32px 24px; }
-  .data-table th:nth-child(n+4),
-  .data-table td:nth-child(n+4) { display: none; }
+
+  /* Tables: scroll horizontally instead of hiding columns (and the
+     Actions buttons in them — Edit/Delete/Approve/Status changes were
+     completely unreachable on mobile before this, not just cramped).
+     Applied to .card broadly rather than relying on :has() support —
+     harmless for cards that don't contain a table. */
+  .card {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .data-table { min-width: 640px; }
+
+  /* Touch targets: desktop's 5px vertical padding is too small to
+     tap reliably. Widened only inside this mobile breakpoint — desktop
+     sizing is untouched. */
+  .action-btn {
+    padding: 9px 14px;
+    font-size: 11px;
+  }
 }
 
 /* ════════════════════════════════

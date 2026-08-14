@@ -18,7 +18,7 @@
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-top">
       <div class="sidebar-brand">
-        <span class="sidebar-gothic">O.</span>
+        <span class="sidebar-gothic">S.</span>
         <div>
           <div class="sidebar-name">SOLTR</div>
           <div class="sidebar-role">Admin Panel</div>
@@ -50,6 +50,7 @@
       </button>
       <button class="nav-item" data-page="reviews">
         <span class="nav-icon">◇</span> Reviews
+        <span class="nav-badge" id="reviewsPendingBadge" style="display:none;">0</span>
       </button>
       <button class="nav-item" data-page="analytics">
         <span class="nav-icon">◳</span> Analytics
@@ -317,6 +318,12 @@
             <select class="field-input sm" id="reviewProductFilter" style="width:auto;">
               <option value="">All Products</option>
             </select>
+            <select class="field-input sm" id="reviewStatusFilter" style="width:auto;">
+              <option value="">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
             <div class="search-box">
               <input type="text" placeholder="Search reviews…" id="reviewSearch" class="field-input sm">
             </div>
@@ -325,7 +332,7 @@
         <div class="card">
           <table class="data-table">
             <thead><tr>
-              <th>Reviewer</th><th>Rating</th><th>Product</th><th>Review</th><th>Verified</th><th>Date</th><th></th>
+              <th>Reviewer</th><th>Rating</th><th>Product</th><th>Review</th><th>Status</th><th>Verified</th><th>Date</th><th></th>
             </tr></thead>
             <tbody id="reviewsTbody"></tbody>
           </table>

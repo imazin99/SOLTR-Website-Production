@@ -32,6 +32,24 @@ const reviewSchema = new mongoose.Schema(
     rating:       { type: Number, required: true, min: 1, max: 5 },
     text:         { type: String, required: true, trim: true },
     verified:     { type: Boolean, default: false },
+
+    /* Moderation — deliberately separate from `verified` above, which
+       means something different (verified-purchase badge) and has no
+       bearing on whether a review should be publicly visible. A brand
+       new review is never shown on the storefront until an admin
+       approves it (see reviewController.js's getReviews — public
+       callers are always forced to status:'approved' server-side,
+       regardless of any query param they send).
+       Existing reviews created before this field existed do NOT rely
+       on this default — see migrateReviewStatus.js, which explicitly
+       sets them to 'approved' once, so currently-visible legitimate
+       reviews aren't unexpectedly hidden. */
+    status: {
+      type: String,
+      enum: { values: ['pending', 'approved', 'rejected'], message: '{VALUE} is not a valid review status' },
+      default: 'pending',
+      index: true,
+    },
   },
   { timestamps: true } // createdAt drives the "2 days ago" relative date on the storefront
 );

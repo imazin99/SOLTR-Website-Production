@@ -54,6 +54,7 @@ async function seed() {
         rating: r.rating,
         text: r.text,
         verified: true, // curated sample content — see file header
+        status: 'approved', // same reasoning as verified:true — this is intentionally-shown curated content, not an anonymous public submission
       });
       console.log(`  ✅ Seeded review from ${r.customerName} for "${product.name}"`);
       seeded++;
