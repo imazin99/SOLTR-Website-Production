@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOLTR — Login</title>
+<meta name="description" content="Log in to your SOLTR account.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=JetBrains+Mono:wght@400;500;600;700&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  body { overflow-y: auto; }
+  .login-screen {
+    position: static;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+    padding: 60px 20px;
+    box-sizing: border-box;
+  }
+</style>
+</head>
+<body>
+
+<div class="login-screen" id="loginScreen">
+
+  <!-- decorative watermark -->
+  <div class="login-bg-text" aria-hidden="true">SOLTR</div>
+
+  <div class="login-card" id="loginCard">
+
+    <!-- brand -->
+    <div class="login-brand">
+      <span class="login-gothic">S.</span>
+      <div>
+        <div class="login-title">SOLTR</div>
+        <div class="login-sub">Customer Login</div>
+      </div>
+    </div>
+
+    <h1 class="login-heading">Welcome back.</h1>
+    <p class="login-desc">Log in to view your orders and wishlist.</p>
+
+    <div class="login-error" id="registeredBanner" style="display:none; color:var(--bone); border-color:var(--line); background:var(--black-3); margin-bottom:18px;">
+      Account created — please log in.
+    </div>
+
+    <!-- form -->
+    <form class="login-form" id="loginForm" novalidate>
+
+      <div class="field-group">
+        <label class="field-label" for="loginEmail">Email</label>
+        <input
+          class="field-input"
+          type="email"
+          id="loginEmail"
+          name="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required
+        >
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="loginPassword">Password</label>
+        <div style="position:relative;">
+          <input
+            class="field-input"
+            type="password"
+            id="loginPassword"
+            name="password"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            required
+            style="padding-right:48px;"
+          >
+          <button
+            type="button"
+            id="togglePassword"
+            aria-label="Toggle password visibility"
+            style="
+              position:absolute; right:14px; top:50%; transform:translateY(-50%);
+              font-family:var(--mono); font-size:10px; text-transform:uppercase;
+              letter-spacing:.06em; color:var(--smoke); background:none; border:none; cursor:pointer;
+            "
+          >SHOW</button>
+        </div>
+      </div>
+
+      <div style="text-align:right; margin-top:-6px;">
+        <a href="forgot-password.html" style="font-family:var(--mono); font-size:10.5px; color:var(--smoke); text-decoration:underline;">Forgot Password?</a>
+      </div>
+
+      <!-- Remember me -->
+      <label class="field-group" style="flex-direction:row; align-items:center; gap:8px; cursor:pointer;">
+        <input type="checkbox" id="rememberMe" style="width:auto; accent-color:var(--burgundy-light);">
+        <span class="field-label" style="margin:0; cursor:pointer;">Remember me on this device</span>
+      </label>
+
+      <!-- error message -->
+      <div class="login-error" id="loginError" role="alert" aria-live="assertive">
+        Incorrect email or password.
+      </div>
+
+      <div id="resendVerificationWrap" style="display:none; margin-bottom:16px; text-align:center;">
+        <button type="button" id="resendVerificationBtn" class="login-btn" style="width:auto; padding:10px 22px; font-size:11px;">
+          Resend Verification Email
+        </button>
+        <div class="login-error" id="resendResult" style="display:none; margin-top:10px; color:var(--bone); border-color:var(--line); background:var(--black-3);"></div>
+      </div>
+
+      <button class="login-btn" type="submit" id="submitBtn">
+        Log In →
+      </button>
+
+    </form>
+
+    <div style="margin-top:22px; text-align:center; font-family:var(--mono); font-size:11px; color:var(--smoke);">
+      New here? <a href="customer-register.html" style="color:var(--bone); text-decoration:underline;">Create an account</a>
+    </div>
+
+    <!-- back link -->
+    <div style="margin-top:14px; text-align:center;">
+      <a
+        href="../index.html"
+        style="font-family:var(--mono); font-size:10.5px; text-transform:uppercase;
+               letter-spacing:.07em; color:var(--smoke); transition:color .18s;"
+        onmouseover="this.style.color='var(--bone)'"
+        onmouseout="this.style.color='var(--smoke)'"
+      >↗ Back to store</a>
+    </div>
+
+  </div>
+</div>
+
+<script src="../js/config.js"></script>
+<script src="../js/customer-auth.js"></script>
+<script>
+  /* ── If already authenticated (and the token still verifies), skip login page ── */
+  CUSTOMER_AUTH.redirectIfLoggedIn();
+
+  /* ── Show a banner if arriving fresh from a successful registration ── */
+  if (new URLSearchParams(window.location.search).get('registered') === '1') {
+    document.getElementById('registeredBanner').style.display = 'block';
+  }
+
+  /* ── Show / hide password ── */
+  const pwdInput  = document.getElementById("loginPassword");
+  const toggleBtn = document.getElementById("togglePassword");
+  toggleBtn.addEventListener("click", () => {
+    const isText = pwdInput.type === "text";
+    pwdInput.type  = isText ? "password" : "text";
+    toggleBtn.textContent = isText ? "SHOW" : "HIDE";
+  });
+
+  /* ── Form submit ── */
+  document.getElementById("loginForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const email      = document.getElementById("loginEmail").value.trim();
+    const password   = document.getElementById("loginPassword").value;
+    const rememberMe = document.getElementById("rememberMe").checked;
+    const errorEl    = document.getElementById("loginError");
+    const submitBtn  = document.getElementById("submitBtn");
+    const card       = document.getElementById("loginCard");
+
+    submitBtn.classList.add("loading");
+    errorEl.classList.remove("show");
+    document.getElementById("resendVerificationWrap").style.display = "none";
+
+    const result = await CUSTOMER_AUTH.login(email, password, rememberMe);
+
+    if (result.ok) {
+      submitBtn.textContent = "Redirecting…";
+      window.location.href = "../index.html";
+    } else if (result.emailNotVerified) {
+      submitBtn.classList.remove("loading");
+      errorEl.textContent = result.error || 'Please verify your email address before continuing.';
+      errorEl.classList.add("show");
+      document.getElementById("resendVerificationWrap").style.display = "block";
+      document.getElementById("resendVerificationBtn").dataset.email = result.email || email;
+    } else {
+      submitBtn.classList.remove("loading");
+      errorEl.textContent = result.error;
+      errorEl.classList.add("show");
+      document.getElementById("resendVerificationWrap").style.display = "none";
+
+      card.classList.remove("shake");
+      void card.offsetWidth; // force reflow so the animation re-triggers if already shaking
+      card.classList.add("shake");
+
+      document.getElementById("loginPassword").value = "";
+      document.getElementById("loginPassword").focus();
+    }
+  });
+
+  /* ── Resend verification email (shown only when login reports emailNotVerified) ── */
+  const API = window.SOLTR_CONFIG.API;
+
+  document.getElementById("resendVerificationBtn").addEventListener("click", async function () {
+    const email  = this.dataset.email;
+    const btn    = this;
+    const result = document.getElementById("resendResult");
+
+    result.style.display = 'none';
+    btn.classList.add("loading");
+
+    try {
+      const res  = await fetch(`${API}/customers/resend-verification`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      btn.classList.remove("loading");
+      result.textContent = data.message || (res.ok ? 'Verification email sent. Please check your inbox.' : 'Could not resend verification email.');
+      result.style.color = res.ok ? 'var(--bone)' : 'var(--burgundy-light)';
+      result.style.borderColor = res.ok ? 'var(--line)' : 'var(--burgundy)';
+      result.style.background = res.ok ? 'var(--black-3)' : 'rgba(110,20,35,.12)';
+      result.style.display = 'block';
+    } catch (err) {
+      btn.classList.remove("loading");
+      result.textContent = 'Could not reach the server. Please try again.';
+      result.style.color = 'var(--burgundy-light)';
+      result.style.borderColor = 'var(--burgundy)';
+      result.style.background = 'rgba(110,20,35,.12)';
+      result.style.display = 'block';
+    }
+  });
+</script>
+</body>
+</html>

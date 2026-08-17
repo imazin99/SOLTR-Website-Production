@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOLTR — Admin Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800&family=JetBrains+Mono:wght@400;500;600;700&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════ APP ═══════════════════════════════════════ -->
+<div class="app" id="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-brand">
+        <span class="sidebar-gothic">S.</span>
+        <div>
+          <div class="sidebar-name">SOLTR</div>
+          <div class="sidebar-role">Admin Panel</div>
+        </div>
+      </div>
+      <!-- Logo: assests/images/product/logo.png -->
+      <button class="sidebar-close" id="sidebarClose" aria-label="Close sidebar">✕</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <button class="nav-item active" data-page="home">
+        <span class="nav-icon">◈</span> Dashboard
+      </button>
+      <button class="nav-item" data-page="orders">
+        <span class="nav-icon">◳</span> Orders
+        <span class="nav-badge" id="pendingBadge">3</span>
+      </button>
+      <button class="nav-item" data-page="products">
+        <span class="nav-icon">◫</span> Products
+      </button>
+      <button class="nav-item" data-page="customers">
+        <span class="nav-icon">◎</span> Customers
+      </button>
+
+      <div class="nav-section-label">Marketing</div>
+      <button class="nav-item" data-page="coupons">
+        <span class="nav-icon">◈</span> Coupons
+      </button>
+      <button class="nav-item" data-page="reviews">
+        <span class="nav-icon">◇</span> Reviews
+        <span class="nav-badge" id="reviewsPendingBadge" style="display:none;">0</span>
+      </button>
+      <button class="nav-item" data-page="analytics">
+        <span class="nav-icon">◳</span> Analytics
+      </button>
+
+      <div class="nav-section-label">System</div>
+      <button class="nav-item" data-page="content">
+        <span class="nav-icon">◇</span> Content
+      </button>
+      <button class="nav-item" data-page="settings">
+        <span class="nav-icon">◎</span> Settings
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="../index.html" class="sidebar-view-store" target="_blank">↗ View Store</a>
+      <button class="sidebar-logout" id="logoutBtn">← Logout</button>
+    </div>
+  </aside>
+
+  <!-- OVERLAY (mobile) -->
+  <div class="mob-overlay" id="mobOverlay"></div>
+
+  <!-- MAIN -->
+  <div class="main-wrap">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="burger-btn" id="burgerBtn" aria-label="Open sidebar">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="page-title" id="pageTitle">Dashboard</div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-date" id="topbarDate"></div>
+        <div class="admin-chip">
+          <div class="admin-av">M</div>
+          <span>Mazen</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ─── PAGE: HOME ─── -->
+    <section class="page active" data-page="home">
+      <div class="page-inner">
+
+        <div class="welcome-row">
+          <div>
+            <div class="eyebrow">SS'26 Drop</div>
+            <h2 class="page-h2">Good to see you, Mazen.</h2>
+          </div>
+          <a href="../index.html" target="_blank" class="btn-outline">↗ Live Store</a>
+        </div>
+
+        <!-- STAT CARDS -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Revenue</div>
+            <div class="stat-value" id="statRevenue">—</div>
+            <div class="stat-delta positive" id="statRevenueDelta">Loading…</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Orders</div>
+            <div class="stat-value" id="statOrders">—</div>
+            <div class="stat-delta positive" id="statOrdersDelta">Loading…</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Customers</div>
+            <div class="stat-value">—</div>
+            <div class="stat-delta positive">Coming soon</div>
+          </div>
+          <div class="stat-card highlight">
+            <div class="stat-label">Pending Orders</div>
+            <div class="stat-value" id="statPending">—</div>
+            <div class="stat-delta warn" id="statPendingDelta">Loading…</div>
+          </div>
+          <div class="stat-card" id="statLowStockCard">
+            <div class="stat-label">Low Stock Alerts</div>
+            <div class="stat-value" id="statLowStock">—</div>
+            <div class="stat-delta warn" id="statLowStockDelta">Loading…</div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <!-- RECENT ORDERS -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title">Recent Orders</div>
+              <button class="text-btn" data-page="orders">View all →</button>
+            </div>
+            <table class="data-table">
+              <thead><tr>
+                <th>Order</th><th>Customer</th><th>Total</th><th>Status</th>
+              </tr></thead>
+              <tbody id="recentOrdersTbody"></tbody>
+            </table>
+          </div>
+
+          <!-- TOP PRODUCTS -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title">Top Products</div>
+              <button class="text-btn" data-page="products">View all →</button>
+            </div>
+            <div class="top-products-list" id="topProductsList"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── PAGE: ORDERS ─── -->
+    <section class="page" data-page="orders">
+      <div class="page-inner">
+
+        <!-- Title row -->
+        <div class="page-head-row">
+          <h2 class="page-h2">Orders</h2>
+          <button class="btn-solid" id="createOrderBtn">+ Create Order</button>
+        </div>
+
+        <!-- Search bar -->
+        <div class="orders-search-row">
+          <div class="orders-search-wrap">
+            <span class="orders-search-icon">⌕</span>
+            <input class="orders-search-input" type="text" id="orderSearch"
+                   placeholder="Search by Order ID, customer name, phone or email…"
+                   autocomplete="off" spellcheck="false">
+            <button class="orders-search-clear" id="searchClearBtn" title="Clear search">✕</button>
+          </div>
+        </div>
+
+        <!-- Advanced filters -->
+        <div class="orders-filters-bar" id="ordersFiltersBar">
+          <div class="ofb-group">
+            <label class="ofb-label">Payment</label>
+            <select class="field-input sm" id="filterPaymentStatus">
+              <option value="">All</option>
+              <option value="Unpaid">Unpaid</option>
+              <option value="Paid">Paid</option>
+            </select>
+          </div>
+          <div class="ofb-group">
+            <label class="ofb-label">City</label>
+            <input class="field-input sm" type="text" id="filterCity" placeholder="e.g. Cairo">
+          </div>
+          <div class="ofb-group">
+            <label class="ofb-label">From</label>
+            <input class="field-input sm" type="date" id="filterDateFrom">
+          </div>
+          <div class="ofb-group">
+            <label class="ofb-label">To</label>
+            <input class="field-input sm" type="date" id="filterDateTo">
+          </div>
+          <div class="ofb-group ofb-sort">
+            <label class="ofb-label">Sort</label>
+            <select class="field-input sm" id="filterSort">
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="total-desc">Total ↓</option>
+              <option value="total-asc">Total ↑</option>
+            </select>
+          </div>
+          <button class="ofb-clear-btn" id="clearAllFiltersBtn">Reset all</button>
+        </div>
+
+        <!-- Result summary -->
+        <div class="orders-result-bar" id="ordersResultBar" style="display:none;">
+          <span id="ordersResultText"></span>
+          <button class="text-btn" id="resultClearBtn">Clear filters</button>
+        </div>
+
+        <!-- Status chips -->
+        <div class="filter-row" style="margin-bottom:20px;">
+          <button class="chip active" data-filter="all">All</button>
+          <button class="chip" data-filter="Pending">Pending</button>
+          <button class="chip" data-filter="Processing">Processing</button>
+          <button class="chip" data-filter="Confirmed">Confirmed</button>
+          <button class="chip" data-filter="Shipped">Shipped</button>
+          <button class="chip" data-filter="Delivered">Delivered</button>
+          <button class="chip" data-filter="Cancelled">Cancelled</button>
+          <button class="chip" data-filter="Returned">Returned</button>
+        </div>
+
+        <!-- Orders table -->
+        <div class="card orders-table-card">
+          <table class="data-table">
+            <thead><tr>
+              <th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th>
+              <th>Status</th><th>Payment</th><th>Date</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="ordersTbody"></tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── PAGE: PRODUCTS ─── -->
+    <section class="page" data-page="products">
+      <div class="page-inner">
+        <div class="page-head-row">
+          <h2 class="page-h2">Products</h2>
+          <button class="btn-solid" id="addProductBtn">+ Add Product</button>
+        </div>
+        <div class="products-grid" id="productsGrid"></div>
+      </div>
+    </section>
+
+    <!-- ─── PAGE: CUSTOMERS ─── -->
+    <section class="page" data-page="customers">
+      <div class="page-inner">
+        <div class="page-head-row">
+          <h2 class="page-h2">Customers</h2>
+          <div class="search-box">
+            <input type="text" placeholder="Search customers…" id="customerSearch" class="field-input sm">
+          </div>
+        </div>
+        <div class="card customers-table-card">
+          <table class="data-table">
+            <thead><tr>
+              <th>Customer</th><th>Email</th><th>Phone</th><th>Orders</th><th>Total Spent</th><th>Joined</th>
+            </tr></thead>
+            <tbody id="customersTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── PAGE: COUPONS ─── -->
+    <section class="page" data-page="coupons">
+      <div class="page-inner">
+        <div class="page-head-row">
+          <h2 class="page-h2">Coupons</h2>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <div class="search-box">
+              <input type="text" placeholder="Search by code…" id="couponSearch" class="field-input sm">
+            </div>
+            <select class="field-input sm" id="couponSort" style="width:auto;">
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+            </select>
+            <button class="btn-solid" id="addCouponBtn">+ New Coupon</button>
+          </div>
+        </div>
+        <div class="card coupons-table-card">
+          <table class="data-table">
+            <thead><tr>
+              <th>Code</th><th>Discount</th><th>Min. Order</th><th>Expires</th>
+              <th>Used</th><th>Remaining</th><th>Status</th><th></th>
+            </tr></thead>
+            <tbody id="couponsTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── PAGE: REVIEWS ─── -->
+    <section class="page" data-page="reviews">
+      <div class="page-inner">
+        <div class="page-head-row">
+          <h2 class="page-h2">Reviews</h2>
+          <div class="page-head-actions">
+            <select class="field-input sm" id="reviewProductFilter" style="width:auto;">
+              <option value="">All Products</option>
+            </select>
+            <select class="field-input sm" id="reviewStatusFilter" style="width:auto;">
+              <option value="">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+            <div class="search-box">
+              <input type="text" placeholder="Search reviews…" id="reviewSearch" class="field-input sm">
+            </div>
+          </div>
+        </div>
+        <div class="card reviews-table-card">
+          <table class="data-table">
+            <thead><tr>
+              <th>Reviewer</th><th>Rating</th><th>Product</th><th>Review</th><th>Status</th><th>Verified</th><th>Date</th><th></th>
+            </tr></thead>
+            <tbody id="reviewsTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── PAGE: ANALYTICS ─── -->
+    <section class="page" data-page="analytics">
+      <div class="page-inner">
+        <div class="welcome-row">
+          <h2 class="page-h2">Analytics</h2>
+          <div class="eyebrow">Last 7 days</div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Avg. Order Value</div>
+            <div class="stat-value" id="statAvgOrder">—</div>
+            <div class="stat-delta positive" id="statAvgOrderDelta">Loading…</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Orders</div>
+            <div class="stat-value" id="statTotalOrders">—</div>
+            <div class="stat-delta" id="statTotalOrdersDelta">Loading…</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Website Visitors</div>
+            <div class="stat-value" id="statWebsiteVisitors">—</div>
+            <div class="stat-delta positive" id="statWebsiteVisitorsDelta">Loading…</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Cart Abandonment</div>
+            <div class="stat-value" id="statCartAbandon">—</div>
+            <div class="stat-delta" id="statCartAbandonDelta">Loading…</div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <!-- REVENUE CHART -->
+          <div class="card">
+            <div class="card-head"><div class="card-title">Revenue — Last 7 Days</div></div>
+            <div class="bar-chart" id="revenueChart"></div>
+          </div>
+          <!-- ORDERS BY COLOR -->
+          <div class="card">
+            <div class="card-head"><div class="card-title">Sales by Color</div></div>
+            <div class="donut-wrap" id="colorChart"></div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="card">
+            <div class="card-head"><div class="card-title">Orders Per Day</div></div>
+            <div class="bar-chart" id="ordersChart"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">Top Selling Sizes</div></div>
+            <div class="bar-chart horizontal" id="sizesChart"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── PAGE: CONTENT MANAGEMENT ─── -->
+    <section class="page" data-page="content">
+      <div class="page-inner">
+        <h2 class="page-h2">Content Management</h2>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:18px;">Policy Pages</div>
+          <table class="data-table" id="policyTable">
+            <thead><tr>
+              <th>Page</th><th>Slug</th><th>Last Updated</th><th></th>
+            </tr></thead>
+            <tbody id="policyTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── PAGE: CONTENT MANAGEMENT — EDIT ─── -->
+    <section class="page" data-page="content-edit">
+      <div class="page-inner">
+        <div class="page-head-row">
+          <h2 class="page-h2" id="policyEditHeading">Edit Policy Page</h2>
+          <button class="btn-outline" id="policyBackBtn">← Back to Content</button>
+        </div>
+        <div class="card">
+          <div class="form-grid">
+            <div class="field-group full">
+              <label class="field-label">Page Title</label>
+              <input class="field-input" type="text" id="policyEditTitle">
+            </div>
+            <div class="field-group full">
+              <label class="field-label">Content</label>
+              <textarea class="field-input" id="policyEditContent" rows="10" style="min-height:220px;"></textarea>
+            </div>
+          </div>
+          <button class="btn-solid" style="margin-top:20px;" id="policySaveBtn">Save Changes</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── PAGE: SETTINGS ─── -->
+    <section class="page" data-page="settings">
+      <div class="page-inner">
+        <h2 class="page-h2">Settings</h2>
+
+        <div class="settings-grid">
+          <div class="card">
+            <div class="card-title" style="margin-bottom:22px;">Store Information</div>
+            <div class="form-grid">
+              <div class="field-group">
+                <label class="field-label">Store Name</label>
+                <input class="field-input" type="text" id="setStoreName">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Store Email</label>
+                <input class="field-input" type="email" id="setStoreEmail">
+              </div>
+              <div class="field-group">
+                <label class="field-label">WhatsApp Number</label>
+                <input class="field-input" type="text" id="setWhatsapp">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Instagram Handle</label>
+                <input class="field-input" type="text" id="setInstagram">
+              </div>
+              <div class="field-group full">
+                <label class="field-label">Store Description</label>
+                <textarea class="field-input" rows="3" id="setDescription"></textarea>
+              </div>
+            </div>
+            <button class="btn-solid" style="margin-top:20px;" id="saveSettingsBtn">Save Changes</button>
+          </div>
+
+          <div class="settings-right">
+            <div class="card">
+              <div class="card-title" style="margin-bottom:18px;">Shipping</div>
+              <div class="toggle-row">
+                <div>
+                  <div class="toggle-label">Free Shipping</div>
+                  <div class="toggle-sub">All orders within Egypt</div>
+                </div>
+                <div class="toggle" id="freeShippingToggle"></div>
+              </div>
+              <div class="toggle-row">
+                <div>
+                  <div class="toggle-label">Cash on Delivery</div>
+                  <div class="toggle-sub">Accept COD orders</div>
+                </div>
+                <div class="toggle" id="codToggle"></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title" style="margin-bottom:18px;">Admin Account</div>
+              <div class="field-group">
+                <label class="field-label">Admin Name</label>
+                <input class="field-input" type="text" id="setAdminName">
+              </div>
+              <div class="field-group" style="margin-top:12px;">
+                <label class="field-label">Current Password</label>
+                <input class="field-input" type="password" id="setCurrentPassword" placeholder="Required to change password" autocomplete="current-password">
+              </div>
+              <div class="field-group" style="margin-top:12px;">
+                <label class="field-label">New Password</label>
+                <input class="field-input" type="password" id="setNewPassword" placeholder="Leave blank to keep current" autocomplete="new-password">
+              </div>
+              <button class="btn-outline" style="margin-top:16px;" id="updateAccountBtn">Update Account</button>
+            </div>
+
+            <div class="card danger-card">
+              <div class="card-title" style="margin-bottom:10px; color:var(--burgundy-light);">Danger Zone</div>
+              <p style="color:var(--smoke); font-size:13px; margin-bottom:14px;">These actions are irreversible. Proceed with caution.</p>
+              <button class="btn-danger" onclick="alert('This will be enabled when backend is connected.')">Clear All Orders</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ─── PAGE: ORDER DETAIL ─── -->
+    <section class="page" data-page="order-detail">
+      <div class="page-inner">
+
+        <!-- Back + title row -->
+        <div class="od-header">
+          <button class="od-back" id="odBackBtn">← Back to Orders</button>
+          <div class="od-title-row">
+            <h2 class="page-h2" id="odOrderNumber">—</h2>
+            <div id="odStatusBadge"></div>
+          </div>
+          <div class="od-meta-row" id="odMetaRow"></div>
+        </div>
+
+        <!-- Two-column layout -->
+        <div class="od-grid">
+
+          <!-- LEFT: content-heavy sections -->
+          <div class="od-col">
+
+            <div class="card od-card">
+              <div class="od-card-label">Customer Information</div>
+              <div id="odCustomer"></div>
+            </div>
+
+            <div class="card od-card">
+              <div class="od-card-label">Shipping Address</div>
+              <div id="odAddress"></div>
+            </div>
+
+            <div class="card od-card">
+              <div class="od-card-label">Ordered Products</div>
+              <div id="odItems"></div>
+            </div>
+
+            <div class="card od-card" id="odNotesCard">
+              <div class="od-card-label">Notes</div>
+              <p class="od-notes-body" id="odNotesBody"></p>
+            </div>
+
+          </div>
+
+          <!-- RIGHT: summary, timeline, totals -->
+          <div class="od-col">
+
+            <div class="card od-card">
+              <div class="od-card-label">Order & Payment Status</div>
+              <div id="odSummary"></div>
+            </div>
+
+            <div class="card od-card">
+              <div class="od-card-label">Status Timeline</div>
+              <div class="od-timeline" id="odTimeline"></div>
+            </div>
+
+            <div class="card od-card">
+              <div class="od-card-label">Totals</div>
+              <div id="odTotals"></div>
+            </div>
+
+            <div class="od-action-row">
+              <button class="btn-outline" id="odEditBtn" style="flex:1;">Edit Order</button>
+              <button class="action-btn del-btn" id="odDeleteBtn" style="flex:1;">Delete Order</button>
+            </div>
+
+          </div>
+        </div><!-- /od-grid -->
+      </div>
+    </section>
+
+  </div><!-- /main-wrap -->
+</div><!-- /app -->
+
+
+<!-- ═══════════════════════════════════════ PRODUCT MODAL ═══════════════════════════════════════ -->
+<div class="modal-overlay" id="productModalOverlay">
+  <div class="modal-box">
+
+    <div class="modal-head">
+      <div class="modal-title" id="modalTitle">+ Add Product</div>
+      <button class="modal-close" id="modalClose" type="button" aria-label="Close">✕</button>
+    </div>
+
+    <form id="productForm" novalidate>
+      <input type="hidden" id="hiddenProductId">
+
+      <div class="modal-body">
+        <div class="modal-grid">
+
+          <!-- Name -->
+          <div class="field-group">
+            <label class="field-label" for="pName">Product Name <span class="req">*</span></label>
+            <input class="field-input" type="text" id="pName" placeholder="e.g. Hustle" required autocomplete="off">
+          </div>
+
+          <!-- Price -->
+          <div class="field-group">
+            <label class="field-label" for="pPrice">Price (LE) <span class="req">*</span></label>
+            <input class="field-input" type="number" id="pPrice" placeholder="650" min="0" step="1" required>
+          </div>
+
+          <!-- Description -->
+          <div class="field-group modal-full">
+            <label class="field-label" for="pDesc">Description</label>
+            <textarea class="field-input" id="pDesc" rows="2" placeholder="Short product description…"></textarea>
+          </div>
+
+          <!-- Category -->
+          <div class="field-group">
+            <label class="field-label" for="pCategory">Category <span class="req">*</span></label>
+            <select class="field-input" id="pCategory" required>
+              <option value="Tee">Tee</option>
+              <option value="Boxy">Boxy Tee</option>
+              <option value="Hoodie">Hoodie</option>
+              <option value="Accessory">Accessory</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <!-- Collection -->
+          <div class="field-group">
+            <label class="field-label" for="pCollection">Collection</label>
+            <input class="field-input" type="text" id="pCollection" placeholder="SS'26" value="SS'26" autocomplete="off">
+          </div>
+
+          <!-- Stock -->
+          <div class="field-group">
+            <label class="field-label" for="pStock">Stock Quantity</label>
+            <input class="field-input" type="number" id="pStock" placeholder="0" min="0" step="1" value="0">
+          </div>
+
+          <!-- Sizes -->
+          <div class="field-group">
+            <label class="field-label">Available Sizes</label>
+            <div class="check-group" id="sizeChecks">
+              <label class="check-label"><input type="checkbox" value="XS"> XS</label>
+              <label class="check-label"><input type="checkbox" value="S" checked> S</label>
+              <label class="check-label"><input type="checkbox" value="M" checked> M</label>
+              <label class="check-label"><input type="checkbox" value="L" checked> L</label>
+              <label class="check-label"><input type="checkbox" value="XL" checked> XL</label>
+              <label class="check-label"><input type="checkbox" value="XXL"> XXL</label>
+            </div>
+            <div class="field-label" style="margin-top:10px;">Inventory by Size</div>
+            <div id="sizeInventoryFields" class="check-group" style="display:grid;grid-template-columns:repeat(3,minmax(70px,1fr));gap:8px;"></div>
+          </div>
+
+          <!-- Colors -->
+          <div class="field-group">
+            <label class="field-label">Available Colors <span class="req">*</span></label>
+            <div class="check-group" id="colorChecks">
+              <label class="check-label"><input type="checkbox" value="Black"> Black</label>
+              <label class="check-label"><input type="checkbox" value="White"> White</label>
+              <label class="check-label"><input type="checkbox" value="Burgundy"> Burgundy</label>
+              <label class="check-label"><input type="checkbox" value="Grey"> Grey</label>
+              <label class="check-label"><input type="checkbox" value="Navy"> Navy</label>
+            </div>
+          </div>
+
+          <!-- Images -->
+          <div class="field-group modal-full">
+            <label class="field-label">Product Images</label>
+            <label class="upload-zone" id="uploadZone" for="pImages">
+              <input type="file" id="pImages" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
+              <div class="upload-prompt">
+                <span class="upload-icon">↑</span>
+                <span class="upload-text">Click to upload or drag images here</span>
+                <span class="upload-hint">JPG · PNG · WEBP — max 15 MB each</span>
+              </div>
+            </label>
+            <div class="img-preview" id="imgPreview"></div>
+            <div id="existingImages"></div>
+          </div>
+
+        </div><!-- /modal-grid -->
+      </div><!-- /modal-body -->
+
+      <div class="modal-footer">
+        <div class="modal-validation-msg" id="validationMsg"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn-outline" id="modalCancelBtn">Cancel</button>
+          <button type="submit" class="btn-solid"   id="modalSubmitBtn">Save Product</button>
+        </div>
+      </div>
+
+    </form>
+  </div><!-- /modal-box -->
+</div>
+
+
+<!-- ═══════════════════════════════════════ ORDER MODAL ═══════════════════════════════════════ -->
+<div class="modal-overlay" id="orderModalOverlay">
+  <div class="modal-box" style="max-width:740px;">
+
+    <div class="modal-head">
+      <div class="modal-title" id="orderModalTitle">Create Order</div>
+      <button class="modal-close" id="orderModalClose" type="button" aria-label="Close">✕</button>
+    </div>
+
+    <form id="orderForm" novalidate>
+      <input type="hidden" id="hiddenOrderId">
+
+      <div class="modal-body">
+        <div class="modal-grid">
+
+          <!-- ── Customer ── -->
+          <div class="field-group">
+            <label class="field-label" for="oName">Customer Name <span class="req">*</span></label>
+            <input class="field-input" type="text" id="oName" placeholder="Ahmed Samy" required autocomplete="off">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="oPhone">Phone <span class="req">*</span></label>
+            <input class="field-input" type="text" id="oPhone" placeholder="01012345678" required>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="oEmail">Email</label>
+            <input class="field-input" type="email" id="oEmail" placeholder="customer@email.com">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="oCity">City</label>
+            <input class="field-input" type="text" id="oCity" placeholder="Cairo">
+          </div>
+          <div class="field-group modal-full">
+            <label class="field-label" for="oAddress">Address</label>
+            <input class="field-input" type="text" id="oAddress" placeholder="Street, Building, Area">
+          </div>
+
+          <!-- ── Items ── -->
+          <div class="field-group modal-full">
+            <label class="field-label">Order Items <span class="req">*</span></label>
+            <div class="order-items-header">
+              <span>Product</span><span>Color</span><span>Size</span><span>Price</span><span>Qty</span><span></span>
+            </div>
+            <div id="orderItemsList"></div>
+            <button type="button" id="addOrderItemBtn" class="btn-outline"
+                    style="width:100%;margin-top:10px;font-size:11px;">+ Add Item</button>
+          </div>
+
+          <!-- ── Totals ── -->
+          <div class="field-group">
+            <label class="field-label" for="oShipping">Shipping Fee (LE)</label>
+            <input class="field-input" type="number" id="oShipping" value="0" min="0" step="1">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Order Total (LE)</label>
+            <input class="field-input" id="oTotal" type="text" readonly
+                   style="color:var(--smoke);cursor:default;" placeholder="Auto-calculated" tabindex="-1">
+          </div>
+
+          <!-- ── Order meta ── -->
+          <div class="field-group">
+            <label class="field-label" for="oStatus">Status</label>
+            <select class="field-input" id="oStatus">
+              <option value="Pending">Pending</option>
+              <option value="Processing">Processing</option>
+              <option value="Confirmed">Confirmed</option>
+              <option value="Shipped">Shipped</option>
+              <option value="Delivered">Delivered</option>
+              <option value="Cancelled">Cancelled</option>
+              <option value="Returned">Returned</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="oPaymentMethod">Payment Method</label>
+            <select class="field-input" id="oPaymentMethod">
+              <option value="WhatsApp">WhatsApp</option>
+              <option value="COD">Cash on Delivery</option>
+              <option value="Online">Online</option>
+            </select>
+          </div>
+
+          <!-- ── Notes ── -->
+          <div class="field-group modal-full">
+            <label class="field-label" for="oNotes">Notes</label>
+            <textarea class="field-input" id="oNotes" rows="2"
+                      placeholder="Special instructions, delivery notes…"></textarea>
+          </div>
+
+        </div><!-- /modal-grid -->
+      </div><!-- /modal-body -->
+
+      <div class="modal-footer">
+        <div class="modal-validation-msg" id="orderValidationMsg"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn-outline" id="orderModalCancelBtn">Cancel</button>
+          <button type="submit" class="btn-solid"   id="orderModalSubmitBtn">Save Order</button>
+        </div>
+      </div>
+
+    </form>
+  </div><!-- /modal-box -->
+</div>
+
+<!-- COUPON MODAL -->
+<div class="modal-overlay" id="couponModalOverlay">
+  <div class="modal-box" style="max-width:520px;">
+
+    <div class="modal-head">
+      <div class="modal-title" id="couponModalTitle">Create Coupon</div>
+      <button class="modal-close" id="couponModalClose" type="button" aria-label="Close">✕</button>
+    </div>
+
+    <form id="couponForm" novalidate>
+      <input type="hidden" id="hiddenCouponId">
+
+      <div class="modal-body">
+        <div class="modal-grid">
+
+          <div class="field-group modal-full">
+            <label class="field-label" for="cCode">Coupon Code <span class="req">*</span></label>
+            <input class="field-input" type="text" id="cCode" placeholder="SOLTR10" required
+                   style="text-transform:uppercase;">
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="cDiscountType">Discount Type <span class="req">*</span></label>
+            <select class="field-input" id="cDiscountType">
+              <option value="percentage">Percentage (%)</option>
+              <option value="fixed">Fixed (LE)</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="cDiscountValue">Discount Value <span class="req">*</span></label>
+            <input class="field-input" type="number" id="cDiscountValue" min="0" step="1" placeholder="10">
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="cMinOrder">Minimum Order Amount (LE)</label>
+            <input class="field-input" type="number" id="cMinOrder" min="0" step="1" value="0">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="cMaxDiscount">Maximum Discount (LE)</label>
+            <input class="field-input" type="number" id="cMaxDiscount" min="0" step="1" value="0"
+                   placeholder="0 = no cap">
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="cExpiryDate">Expiry Date <span class="req">*</span></label>
+            <input class="field-input" type="date" id="cExpiryDate" required>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="cUsageLimit">Usage Limit</label>
+            <input class="field-input" type="number" id="cUsageLimit" min="0" step="1" value="0"
+                   placeholder="0 = unlimited">
+          </div>
+
+          <div class="field-group modal-full">
+            <label class="field-label" for="cActive">Status</label>
+            <select class="field-input" id="cActive">
+              <option value="true">Active</option>
+              <option value="false">Inactive</option>
+            </select>
+          </div>
+
+        </div><!-- /modal-grid -->
+      </div><!-- /modal-body -->
+
+      <div class="modal-footer">
+        <div class="modal-validation-msg" id="couponValidationMsg"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn-outline" id="couponModalCancelBtn">Cancel</button>
+          <button type="submit" class="btn-solid"   id="couponModalSubmitBtn">Save Coupon</button>
+        </div>
+      </div>
+
+    </form>
+  </div><!-- /modal-box -->
+</div>
+
+<!-- TOAST + SCRIPTS -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="../js/config.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>
