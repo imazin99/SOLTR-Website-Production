@@ -1,5 +1,6 @@
 const assert = require('assert/strict');
 const fs = require('fs');
+const vm = require('vm');
 const path = require('path');
 
 const root = path.join(__dirname, '..');
@@ -30,9 +31,36 @@ for (const htmlFile of htmlFiles) {
 pass(`all ${htmlFiles.length} frontend pages load the centralized theme assets exactly once`);
 
 assert.match(themeInit, /localStorage\.getItem\(STORAGE_KEY\)/);
-assert.match(themeInit, /prefers-color-scheme: light/);
+assert.match(themeInit, /theme = 'dark'/);
+assert.doesNotMatch(themeInit, /prefers-color-scheme/);
+assert.doesNotMatch(themeInit, /matchMedia/);
 assert.match(themeInit, /document\.documentElement\.dataset\.theme = theme/);
-pass('early theme bootstrap restores saved preference or system preference before page styles render');
+
+function runThemeInitializer(storedTheme, systemPrefersLight) {
+  let matchMediaCalled = false;
+  const documentElement = { dataset: {}, style: {} };
+  const context = {
+    window: {
+      localStorage: { getItem: () => storedTheme },
+      matchMedia: () => {
+        matchMediaCalled = true;
+        return { matches: systemPrefersLight };
+      }
+    },
+    document: { documentElement }
+  };
+  vm.runInNewContext(themeInit, context);
+  return { theme: documentElement.dataset.theme, matchMediaCalled };
+}
+
+assert.equal(runThemeInitializer(null, true).theme, 'dark');
+assert.equal(runThemeInitializer('', true).theme, 'dark');
+assert.equal(runThemeInitializer('invalid', true).theme, 'dark');
+assert.equal(runThemeInitializer('dark', true).theme, 'dark');
+assert.equal(runThemeInitializer('light', false).theme, 'light');
+assert.equal(runThemeInitializer(null, true).matchMediaCalled, false);
+assert.equal(runThemeInitializer(null, false).matchMediaCalled, false);
+pass('missing and invalid preferences default to dark; saved light/dark values win; system preference is ignored');
 
 assert.match(themeController, /soltr_theme/);
 assert.match(themeController, /aria-label/);
@@ -40,7 +68,9 @@ assert.match(themeController, /aria-pressed/);
 assert.match(themeController, /addEventListener\('click'/);
 assert.match(themeController, /localStorage\.setItem\(STORAGE_KEY, theme\)/);
 assert.match(themeController, /theme-toggle-host/);
-pass('theme controller provides persisted, keyboard-accessible, cross-page toggle behavior');
+assert.doesNotMatch(themeController, /matchMedia/);
+assert.doesNotMatch(themeController, /syncSystemTheme/);
+pass('theme controller provides persisted, keyboard-accessible, cross-page toggle behavior without automatic system switching');
 
 for (const token of [
   '--black: #0b0b0c',

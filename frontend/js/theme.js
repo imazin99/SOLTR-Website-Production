@@ -95,27 +95,12 @@
     updateToggle();
   }
 
-  function syncSystemTheme(event) {
-    if (!readStoredTheme()) {
-      setTheme(event.matches ? 'light' : 'dark', false);
-    }
-  }
-
   document.addEventListener('DOMContentLoaded', createToggle);
   window.addEventListener('storage', function (event) {
     if (event.key === STORAGE_KEY && VALID_THEMES.indexOf(event.newValue) !== -1) {
       setTheme(event.newValue, false);
     }
   });
-
-  if (window.matchMedia) {
-    var mediaQuery = window.matchMedia('(prefers-color-scheme: light)');
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', syncSystemTheme);
-    } else if (mediaQuery.addListener) {
-      mediaQuery.addListener(syncSystemTheme);
-    }
-  }
 
   window.SOLTR_THEME = {
     get: getTheme,
