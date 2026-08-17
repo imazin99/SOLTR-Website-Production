@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOLTR — Order Confirmed</title>
+<meta name="description" content="Your SOLTR order has been placed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=JetBrains+Mono:wght@400;500;600;700&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<script src="../js/theme-init.js"></script>
+  <link rel="stylesheet" href="../css/style.css">
+<style>
+  /* Page-specific layout only — everything else (fonts, colors, buttons)
+     reuses the shared design tokens/components from style.css. */
+  .ty-main{ padding:100px 0 140px; }
+  .ty-box{ max-width:520px; margin:0 auto; text-align:center; }
+  .ty-icon{
+    width:64px; height:64px; margin:0 auto 28px; border-radius:50%;
+    background:var(--burgundy); color:var(--paper);
+    display:flex; align-items:center; justify-content:center;
+    font-size:28px; font-family:var(--body);
+  }
+  .ty-title{ font-family:var(--display); font-size:clamp(30px,5vw,42px); letter-spacing:.02em; margin-bottom:14px; color:var(--bone); }
+  .ty-copy{ color:var(--smoke); font-size:15px; line-height:1.7; margin-bottom:32px; }
+  .ty-order-card{
+    border:1px solid var(--line); background:var(--black-2);
+    padding:22px 26px; margin-bottom:36px; text-align:left;
+  }
+  .ty-order-label{ font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--smoke); margin-bottom:6px; }
+  .ty-order-number{ font-family:var(--mono); font-size:20px; font-weight:600; color:var(--bone); }
+  .ty-actions{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  @media (max-width:480px){ .ty-actions{ flex-direction:column; } }
+</style>
+  <link rel="stylesheet" href="../css/theme.css">
+</head>
+<body>
+
+<div class="topbar">🇪🇬 We Ship Across Egypt &nbsp;·&nbsp; SS'26 Summer Drop Live Now</div>
+
+<header id="siteHeader" class="scrolled">
+  <a href="../index.html" class="logo-mark" aria-label="Back to SOLTR store">
+    <img src="../assests/images/product/logo.png" alt="Soltr">
+  </a>
+  <div class="pd-breadcrumb">
+    <a href="../index.html">Shop</a> <span>/</span> <span>Order Confirmed</span>
+  </div>
+</header>
+
+<main class="ty-main">
+  <div class="wrap">
+    <div class="ty-box">
+      <div class="ty-icon" aria-hidden="true">✓</div>
+      <h1 class="ty-title">Order Placed</h1>
+      <p class="ty-copy">Thank you for shopping with SOLTR. We've received your order and we're getting it ready. You'll be reached out to at the contact details you provided if anything needs confirming.</p>
+
+      <div class="ty-order-card" id="tyOrderCard" style="display:none;">
+        <div class="ty-order-label">Order Number</div>
+        <div class="ty-order-number" id="tyOrderNumber">—</div>
+      </div>
+
+      <div class="ty-actions">
+        <a href="../index.html" class="btn btn-solid">Continue Shopping</a>
+        <a href="../account/account.html" class="btn">View My Account</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo-mark"><img src="../assests/images/product/logo.png" alt="Soltr"></div>
+        <p>Premium streetwear out of Egypt. Heavyweight cotton, boxy fit, built to last.</p>
+        <div class="social-row">
+          <a href="https://www.instagram.com/soltr_wear" target="_blank" rel="noopener" aria-label="Instagram">IG</a>
+          <a href="https://www.facebook.com/soltrwear" target="_blank" rel="noopener" aria-label="Facebook">FB</a>
+        </div>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="../index.html#shop">All Tees</a></li>
+          <li><a href="../index.html#shop">Boxy Tees</a></li>
+          <li><a href="../index.html#about">Our Story</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Policies</h4>
+        <ul>
+          <li><a href="policy.html?slug=return-refund">Return &amp; Refund</a></li>
+          <li><a href="policy.html?slug=shipping-policy">Shipping Policy</a></li>
+          <li><a href="policy.html?slug=privacy-policy">Privacy Policy</a></li>
+          <li><a href="policy.html?slug=terms-of-service">Terms of Service</a></li>
+          <li><a href="policy.html?slug=contact-information">Contact Information</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Stay In The Loop</h4>
+        <form class="newsletter" onsubmit="return false;">
+          <input type="email" placeholder="your@email.com" required>
+          <button type="submit">Join →</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Soltr Wear. All rights reserved.</span>
+      <span>Not for everyone.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="thankyou.js"></script>
+  <script src="../js/theme.js"></script>
+</body>
+</html>

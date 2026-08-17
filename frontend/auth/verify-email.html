@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOLTR — Verify Email</title>
+<meta name="description" content="Verify your SOLTR account email.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=JetBrains+Mono:wght@400;500;600;700&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<script src="../js/theme-init.js"></script>
+  <link rel="stylesheet" href="../css/style.css">
+<style>
+  body { overflow-y: auto; }
+  .login-screen {
+    position: static;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+    padding: 60px 20px;
+    box-sizing: border-box;
+  }
+</style>
+  <link rel="stylesheet" href="../css/theme.css">
+</head>
+<body>
+
+<div class="login-screen" id="loginScreen">
+
+  <!-- decorative watermark -->
+  <div class="login-bg-text" aria-hidden="true">SOLTR</div>
+
+  <div class="login-card" id="loginCard">
+
+    <!-- brand -->
+    <div class="login-brand">
+      <span class="login-gothic">S.</span>
+      <div>
+        <div class="login-title">SOLTR</div>
+        <div class="login-sub">Email Verification</div>
+      </div>
+    </div>
+
+    <!-- checking state -->
+    <div id="checkingState">
+      <h1 class="login-heading">Verifying your email…</h1>
+      <p class="login-desc">One moment while we confirm your link.</p>
+    </div>
+
+    <!-- success state -->
+    <div id="successState" style="display:none;">
+      <h1 class="login-heading">Email verified successfully.</h1>
+      <p class="login-desc">Your account is ready. You can now log in.</p>
+      <a href="customer-login.html" class="login-btn" style="display:block; text-align:center; text-decoration:none;">Go to Login →</a>
+    </div>
+
+    <!-- error state -->
+    <div id="errorState" style="display:none;">
+      <h1 class="login-heading">This link isn't valid.</h1>
+      <p class="login-desc" id="errorMessage">This verification link is invalid or has expired. Please request a new one below.</p>
+
+      <div class="login-error" id="resendError" role="alert" aria-live="assertive"></div>
+      <div class="login-error" id="resendSuccess" style="display:none; color:var(--bone); border-color:var(--line); background:var(--black-3);"></div>
+
+      <form id="resendForm" novalidate style="margin-top:8px;">
+        <div class="field-group">
+          <label class="field-label" for="resendEmail">Email</label>
+          <input class="field-input" type="email" id="resendEmail" name="email" placeholder="you@example.com" autocomplete="email" required>
+        </div>
+        <button class="login-btn" type="submit" id="resendBtn">Resend Verification Email →</button>
+      </form>
+    </div>
+
+    <!-- back link -->
+    <div style="margin-top:22px; text-align:center; font-family:var(--mono); font-size:11px; color:var(--smoke);">
+      <a href="customer-login.html" style="color:var(--bone); text-decoration:underline;">Back to login</a>
+    </div>
+
+  </div>
+</div>
+
+<script src="../js/config.js"></script>
+<script>
+  const API = window.SOLTR_CONFIG.API;
+
+  const checkingState = document.getElementById('checkingState');
+  const successState  = document.getElementById('successState');
+  const errorState     = document.getElementById('errorState');
+  const errorMessage   = document.getElementById('errorMessage');
+
+  function showState(state) {
+    checkingState.style.display = state === 'checking' ? '' : 'none';
+    successState.style.display  = state === 'success'  ? '' : 'none';
+    errorState.style.display    = state === 'error'     ? '' : 'none';
+  }
+
+  async function verifyToken() {
+    const token = new URLSearchParams(window.location.search).get('token');
+
+    if (!token) {
+      errorMessage.textContent = 'This verification link is missing its token. Please request a new one below.';
+      showState('error');
+      return;
+    }
+
+    try {
+      const res  = await fetch(`${API}/customers/verify-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok) {
+        showState('success');
+      } else {
+        errorMessage.textContent = data.message || 'This verification link is invalid or has expired. Please request a new one below.';
+        showState('error');
+      }
+    } catch (err) {
+      errorMessage.textContent = 'Could not reach the server. Please try again.';
+      showState('error');
+    }
+  }
+
+  document.getElementById('resendForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const email       = document.getElementById('resendEmail').value.trim();
+    const resendBtn   = document.getElementById('resendBtn');
+    const resendError = document.getElementById('resendError');
+    const resendSuccess = document.getElementById('resendSuccess');
+
+    resendError.classList.remove('show');
+    resendSuccess.style.display = 'none';
+    resendBtn.classList.add('loading');
+
+    try {
+      const res  = await fetch(`${API}/customers/resend-verification`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      resendBtn.classList.remove('loading');
+
+      if (res.ok) {
+        resendSuccess.textContent = data.message || 'Verification email sent. Please check your inbox.';
+        resendSuccess.style.display = 'block';
+      } else {
+        resendError.textContent = data.message || 'Could not resend verification email.';
+        resendError.classList.add('show');
+      }
+    } catch (err) {
+      resendBtn.classList.remove('loading');
+      resendError.textContent = 'Could not reach the server. Please try again.';
+      resendError.classList.add('show');
+    }
+  });
+
+  verifyToken();
+</script>
+  <script src="../js/theme.js"></script>
+</body>
+</html>

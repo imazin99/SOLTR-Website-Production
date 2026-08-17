@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOLTR — Admin Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800&family=JetBrains+Mono:wght@400;500;600;700&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<script src="../js/theme-init.js"></script>
+  <link rel="stylesheet" href="dashboard.css">
+<style>
+  /* ── Make the login card fill the full viewport on this standalone page ── */
+  body { overflow: hidden; }
+  .login-screen {
+    /* Override transition — visible by default on login.html */
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+  /* Shake animation for wrong credentials */
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20%,60%  { transform: translateX(-8px); }
+    40%,80%  { transform: translateX(8px); }
+  }
+  .login-card.shake { animation: shake .4s var(--ease); }
+  /* Loading state on button */
+  .login-btn.loading { opacity: .6; pointer-events: none; }
+  .login-btn.loading::after { content: ' …'; }
+</style>
+  <link rel="stylesheet" href="../css/theme.css">
+</head>
+<body>
+
+<div class="login-screen" id="loginScreen">
+
+  <!-- decorative watermark -->
+  <div class="login-bg-text" aria-hidden="true">SOLTR</div>
+
+  <div class="login-card" id="loginCard">
+
+    <!-- brand -->
+    <div class="login-brand">
+      <span class="login-gothic">S.</span>
+      <div>
+        <div class="login-title">SOLTR</div>
+        <div class="login-sub">Admin Dashboard</div>
+      </div>
+    </div>
+
+    <h1 class="login-heading">Welcome back.</h1>
+    <p class="login-desc">Enter your credentials to access the control panel.</p>
+
+    <!-- form -->
+    <form class="login-form" id="loginForm" novalidate>
+
+      <div class="field-group">
+        <label class="field-label" for="loginUsername">Username</label>
+        <input
+          class="field-input"
+          type="text"
+          id="loginUsername"
+          name="username"
+          placeholder="Your admin username"
+          autocomplete="username"
+          autocapitalize="none"
+          spellcheck="false"
+          required
+        >
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="loginPassword">Password</label>
+        <div style="position:relative;">
+          <input
+            class="field-input"
+            type="password"
+            id="loginPassword"
+            name="password"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            required
+            style="padding-right:48px;"
+          >
+          <!-- show / hide password toggle -->
+          <button
+            type="button"
+            id="togglePassword"
+            aria-label="Toggle password visibility"
+            style="
+              position:absolute; right:14px; top:50%; transform:translateY(-50%);
+              font-family:var(--mono); font-size:10px; text-transform:uppercase;
+              letter-spacing:.06em; color:var(--smoke); transition:color .18s;
+            "
+          >SHOW</button>
+        </div>
+      </div>
+
+      <!-- Remember me -->
+      <label class="field-group" style="flex-direction:row; align-items:center; gap:8px; cursor:pointer;">
+        <input type="checkbox" id="rememberMe" style="width:auto; accent-color:var(--burgundy-light);">
+        <span class="field-label" style="margin:0; cursor:pointer;">Remember me on this device</span>
+      </label>
+
+      <!-- error message -->
+      <div class="login-error" id="loginError" role="alert" aria-live="assertive">
+        Incorrect username or password.
+      </div>
+
+      <button class="login-btn" type="submit" id="submitBtn">
+        Access Dashboard →
+      </button>
+
+    </form>
+
+    <!-- back link -->
+    <div style="margin-top:22px; text-align:center;">
+      <a
+        href="../index.html"
+        style="font-family:var(--mono); font-size:10.5px; text-transform:uppercase;
+               letter-spacing:.07em; color:var(--smoke); transition:color .18s;"
+        onmouseover="this.style.color='var(--bone)'"
+        onmouseout="this.style.color='var(--smoke)'"
+      >↗ Back to store</a>
+    </div>
+
+  </div>
+</div>
+
+<script src="../js/config.js"></script>
+<script src="auth.js"></script>
+<script>
+  /* ── If already authenticated, skip login page ── */
+  AUTH.redirectIfLoggedIn();
+
+  /* ── Show / hide password ── */
+  const pwdInput  = document.getElementById("loginPassword");
+  const toggleBtn = document.getElementById("togglePassword");
+  toggleBtn.addEventListener("click", () => {
+    const isText = pwdInput.type === "text";
+    pwdInput.type  = isText ? "password" : "text";
+    toggleBtn.textContent = isText ? "SHOW" : "HIDE";
+  });
+
+  /* ── Form submit ── */
+  document.getElementById("loginForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const username   = document.getElementById("loginUsername").value.trim();
+    const password   = document.getElementById("loginPassword").value;
+    const rememberMe = document.getElementById("rememberMe").checked;
+    const errorEl    = document.getElementById("loginError");
+    const submitBtn  = document.getElementById("submitBtn");
+    const card       = document.getElementById("loginCard");
+
+    /* loading state */
+    submitBtn.classList.add("loading");
+    errorEl.classList.remove("show");
+
+    const result = await AUTH.login(username, password, rememberMe);
+
+    if (result.ok) {
+      /* success — redirect */
+      submitBtn.textContent = "Redirecting…";
+      window.location.href = "dashboard.html";
+    } else {
+      /* failure — shake card + show error */
+      submitBtn.classList.remove("loading");
+      errorEl.textContent = result.error;
+      errorEl.classList.add("show");
+
+      card.classList.remove("shake");
+      /* force reflow so animation re-triggers if already shaking */
+      void card.offsetWidth;
+      card.classList.add("shake");
+
+      document.getElementById("loginPassword").value = "";
+      document.getElementById("loginPassword").focus();
+    }
+  });
+</script>
+  <script src="../js/theme.js"></script>
+</body>
+</html>
